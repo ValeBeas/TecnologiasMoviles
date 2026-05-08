@@ -9,7 +9,6 @@ import com.undef.superahorro.data.local.db.entity.EntidadProducto
 
 /**
  * Base de datos local de la app con Room.
- * Versión 1 para la primera entrega. Si cambio las tablas en el futuro, subo la versión.
  */
 @Database(
     entities = [EntidadCompra::class, EntidadProducto::class],

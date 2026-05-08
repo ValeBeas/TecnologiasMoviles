@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * Operaciones sobre la tabla 'compras': obtener todas, obtener por ID, insertar, actualizar y borrar.
- * Devuelve Flow para que la pantalla se actualice sola cuando cambian los datos.
  */
 @Dao
 interface DaoCompra {

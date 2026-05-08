@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.first
 
 /**
  * Implementación del repositorio de usuario.
- * Le delega todo a PreferenciasUsuario que es la que guarda los datos en DataStore.
  */
 class RepositorioUsuarioImpl(
     private val preferencias: PreferenciasUsuario

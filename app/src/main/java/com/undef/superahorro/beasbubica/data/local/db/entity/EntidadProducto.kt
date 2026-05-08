@@ -5,7 +5,6 @@ import com.undef.superahorro.domain.model.Producto
 
 /**
  * Tabla 'productos' en la base de datos local.
- * Tiene FK a 'compras' con CASCADE DELETE: si borro la compra, se borran sus productos solos.
  */
 @Entity(
     tableName = "productos",

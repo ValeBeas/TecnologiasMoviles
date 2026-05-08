@@ -7,10 +7,6 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-/**
- * Define los endpoints de la API que voy a usar en la Entrega 2.
- * Por ahora la estructura está lista pero no se conecta a nada real.
- */
 interface ServicioApi {
     @GET("supermercados")
     suspend fun obtenerSupermercados(): Response<List<DtoSupermercado>>

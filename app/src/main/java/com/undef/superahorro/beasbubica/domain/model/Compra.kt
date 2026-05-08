@@ -2,7 +2,6 @@ package com.undef.superahorro.domain.model
 
 /**
  * Modelo de una compra. Tiene los datos que muestra la app en pantalla.
- * No es la entidad de Room — esa es EntidadCompra.
  */
 data class Compra(
     val id: Int = 0,
