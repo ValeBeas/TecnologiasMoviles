@@ -88,3 +88,6 @@ El repositorio tiene 17 compras mockeadas distribuidas entre noviembre 2025
 y mayo 2026 para que todos los filtros de estadísticas muestren resultados.
 Los totales de cada compra se calculan sumando sus productos, no son
 números inventados.
+
+## Presentacion Canvas
+https://canva.link/den9i19ftkpf571
