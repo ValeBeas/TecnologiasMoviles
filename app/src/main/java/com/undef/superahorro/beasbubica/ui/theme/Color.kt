@@ -2,17 +2,10 @@ package com.undef.superahorro.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// =====================================================
-// PALETA "ÍNDIGO COSMOS" — SuperAhorro
-// Colores primarios: Índigo profundo + Coral vibrante
-// Transmite: modernidad, confianza, energía
-// =====================================================
 
 // --- Primarios ---
 /**
- * Todos los colores de la app con la paleta "Índigo Cosmos".
- * Acá están los colores principales, los de modo oscuro y los colores
- * de cada supermercado para las franjas de las tarjetas.
+ * Acá están los colores principales y los de modo oscuro
  */
 val IndigoDeep    = Color(0xFF3D2C8D)  // Índigo profundo — color principal
 val IndigoMedium  = Color(0xFF5C42A6)  // Índigo medio — variante activa

@@ -1,8 +1,7 @@
 package com.undef.superahorro.ui.navigation
 
 /**
- * Todas las rutas de la app. Uso sealed class para no tener strings sueltos por el código
- * y que el compilador me avise si me equivoco en el nombre.
+ * Todas las rutas de la app. Uso sealed class que el compilador me avise si me equivoco en el nombre.
  * NuevoProducto solo se puede abrir desde NuevaCompra, no desde el historial.
  */
 sealed class Pantalla(val ruta: String) {

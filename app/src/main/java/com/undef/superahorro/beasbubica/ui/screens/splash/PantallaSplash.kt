@@ -22,15 +22,13 @@ import kotlinx.coroutines.launch
 
 /**
  * Pantalla de bienvenida con el logo animado.
- * La animación hace fade-in y un efecto de rebote. Después de 2.2 segundos va al Login solo.
  */
 @Composable
 fun PantallaSplash(alNavegar: () -> Unit) {
-    // Valores animables para la opacidad y la escala del logo
+
     val alpha = remember { Animatable(0f) }
     val escala = remember { Animatable(0.7f) }
-
-    // Lanza las animaciones en paralelo dentro del LaunchedEffect
+    
     LaunchedEffect(Unit) {
         launch { alpha.animateTo(1f, animationSpec = tween(800)) }
         launch { escala.animateTo(1f, animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow)) }

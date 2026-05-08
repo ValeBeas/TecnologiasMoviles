@@ -34,7 +34,6 @@ fun GrafoNavegacion(
     alCambiarModoOscuro: (Boolean) -> Unit
 ) {
     // ViewModel compartido entre NuevaCompra y NuevoProducto
-    // Se crea una sola vez mientras dure el back stack de NuevaCompra
     val viewModelNuevaCompra = remember { ViewModelNuevaCompra() }
 
     NavHost(navController = navController, startDestination = Pantalla.Splash.ruta) {
