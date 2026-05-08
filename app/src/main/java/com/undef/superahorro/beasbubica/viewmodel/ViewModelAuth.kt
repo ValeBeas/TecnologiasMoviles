@@ -33,7 +33,6 @@ class ViewModelAuth(private val repositorioUsuario: RepositorioUsuario) : ViewMo
         }
     }
 
-    /** Hace el login. Por ahora funciona con cualquier cosa, despues se modificara cuando haya Backend */
     fun iniciarSesion(email: String, password: String, onExito: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             _estadoUsuario.value = EstadoUi(cargando = true)
@@ -50,7 +49,6 @@ class ViewModelAuth(private val repositorioUsuario: RepositorioUsuario) : ViewMo
         }
     }
 
-    /** Cierra la sesión y borra todos los datos guardados en DataStore*/
     fun cerrarSesion(onCompleto: () -> Unit) {
         viewModelScope.launch {
             runCatching {

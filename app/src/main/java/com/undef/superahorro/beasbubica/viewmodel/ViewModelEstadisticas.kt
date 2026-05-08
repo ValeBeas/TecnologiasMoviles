@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-/** Los cuatro filtrados de estadísticas. */
 enum class PeriodoEstadisticas(val etiqueta: String) {
     SEMANA("Semana"),
     MES("Mes"),
@@ -17,8 +16,12 @@ enum class PeriodoEstadisticas(val etiqueta: String) {
 }
 
 /**
- * Agrupa todos los números que muestra la pantalla de estadísticas:
- * total gastado, cantidad de compras, promedio, supermercado favorito y distribución por día.
+ * Estadísticas:
+ * Total gastado
+ * Cantidad de compras
+ * Promedio
+ * Supermercado favorito
+ * Distribución por día.
  */
 data class ResumenEstadisticas(
     val totalGastado: Double = 0.0,
@@ -29,9 +32,6 @@ data class ResumenEstadisticas(
     val gastosPorDia: List<Pair<String, Double>> = emptyList()
 )
 
-/**
- * Maneja los datos de la pantalla de estadísticas
- */
 class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewModel() {
 
     private val _estadoEstadisticas = MutableStateFlow(EstadoUi<ResumenEstadisticas>(cargando = true))
@@ -44,7 +44,6 @@ class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewM
 
     init { cargarEstadisticas() }
 
-    /** Cambia el filtro activo y recalcula los números sin volver a pedir datos*/
     fun cambiarPeriodo(periodo: PeriodoEstadisticas) {
         _periodoSeleccionado.value = periodo
         _estadoEstadisticas.value  = EstadoUi(datos = calcularEstadisticas(todasLasCompras, periodo))
@@ -68,9 +67,6 @@ class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewM
         }
     }
 
-    // ── Parsing de fecha ─────────────────────────────────────────────────
-
-    /** Convierte una fecha en texto (DD/MM/AAAA) a un objeto Calendar para comparar fechas*/
     private fun parsearFecha(fecha: String): Calendar? {
         val partes = fecha.split("/")
         if (partes.size != 3) return null
@@ -83,9 +79,6 @@ class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewM
         }
     }
 
-    // ─ Funciones de filtro —
-
-    /** Devuelve true si la compra es de los últimos 7 días*/
     private fun esDeLaSemana(fecha: String): Boolean {
         val compraCalendar = parsearFecha(fecha) ?: return false
         val inicio = Calendar.getInstance().apply {
@@ -100,7 +93,6 @@ class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewM
         return !compraCalendar.before(inicio) && !compraCalendar.after(fin)
     }
 
-    /** Devuelve true si la compra es del mes actual*/
     private fun esDelMesActual(fecha: String): Boolean {
         val compraCalendar = parsearFecha(fecha) ?: return false
         val hoy = Calendar.getInstance()
@@ -108,7 +100,6 @@ class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewM
                compraCalendar.get(Calendar.MONTH) == hoy.get(Calendar.MONTH)
     }
 
-    /** Devuelve true si la compra es de los últimos 3 meses*/
     private fun esDeTresMeses(fecha: String): Boolean {
         val compraCalendar = parsearFecha(fecha) ?: return false
         val inicio = Calendar.getInstance().apply {
@@ -123,17 +114,11 @@ class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewM
         return !compraCalendar.before(inicio) && !compraCalendar.after(fin)
     }
 
-    /** Devuelve true si la compra es del año actual*/
     private fun esDelAnioActual(fecha: String): Boolean {
         val compraCalendar = parsearFecha(fecha) ?: return false
         return compraCalendar.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)
     }
 
-    // ─ Cálculo de métricas ─
-
-    /**
- * Filtra las compras según el período elegido y calcula todos los números
- */
     private fun calcularEstadisticas(
         compras: List<Compra>,
         periodo: PeriodoEstadisticas
@@ -157,7 +142,6 @@ class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewM
             .mapValues { (_, lista) -> lista.sumOf { it.total } }
         val superFavorito     = gastosPorSuper.maxByOrNull { it.value }?.key ?: ""
 
-        // Agrupa por día para el gráfico de barras (clave = "DD/MM" para mostrar en eje X)
         val gastosPorDia = filtradas
             .groupBy  { it.fecha.take(5) }
             .mapValues { (_, lista) -> lista.sumOf { it.total } }
