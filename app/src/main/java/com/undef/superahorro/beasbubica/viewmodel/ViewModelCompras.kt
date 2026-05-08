@@ -9,8 +9,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 /**
- * Maneja los datos de las pantallas de compras.
- * Tiene el estado de la lista completa, el detalle de una compra y sus productos.
+ * Maneja los datos de las pantallas de compras
  */
 class ViewModelCompras(private val repositorio: RepositorioCompras) : ViewModel() {
 
@@ -28,7 +27,7 @@ class ViewModelCompras(private val repositorio: RepositorioCompras) : ViewModel(
 
     init { cargarCompras() }
 
-    /** Pide todas las compras al repositorio y actualiza el estado. */
+    /** Pide todas las compras al repositorio y actualiza el estado*/
     fun cargarCompras() {
         viewModelScope.launch {
             _estadoCompras.value = EstadoUi(cargando = true)
@@ -44,7 +43,7 @@ class ViewModelCompras(private val repositorio: RepositorioCompras) : ViewModel(
         }
     }
 
-    /** Busca una compra por su ID para mostrar el detalle. */
+    /** Busca una compra por su ID para mostrar el detalle*/
     fun cargarCompraPorId(id: Int) {
         viewModelScope.launch {
             _compraSeleccionada.value = EstadoUi(cargando = true)
@@ -56,7 +55,7 @@ class ViewModelCompras(private val repositorio: RepositorioCompras) : ViewModel(
         }
     }
 
-    /** Carga los productos que tiene una compra para mostrarlos en el detalle. */
+    /** Carga los productos que tiene una compra para mostrarlos en el detalle*/
     fun cargarProductosPorCompra(compraId: Int) {
         viewModelScope.launch {
             _estadoProductos.value = EstadoUi(cargando = true)

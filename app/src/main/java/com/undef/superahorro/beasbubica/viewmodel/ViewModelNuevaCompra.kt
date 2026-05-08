@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /**
- * Comparte el estado de la compra que se está cargando entre NuevaCompra y NuevoProducto.
- * Se crea una sola vez en el grafo y ambas pantallas lo usan para no perder los datos al navegar.
+ * Comparte el estado de la compra que se está cargando entre NuevaCompra y NuevoProducto
+ * Se crea una sola vez en el grafo y ambas pantallas lo usan para no perder los datos al navegar
  */
 class ViewModelNuevaCompra : ViewModel() {
 
@@ -17,7 +17,7 @@ class ViewModelNuevaCompra : ViewModel() {
     private val _productos = MutableStateFlow<List<ProductoEnCompra>>(emptyList())
     val productos: StateFlow<List<ProductoEnCompra>> = _productos.asStateFlow()
 
-    /** Total actual de la compra. Se recalcula solo cada vez que cambia la lista. */
+    /** Total actual de la compra. Se calcula de nuevo cada vez que cambia la lista */
     val total: Double get() = _productos.value.calcularTotal()
 
     /** Agrega un producto nuevo a la compra que se está cargando. */
@@ -28,7 +28,6 @@ class ViewModelNuevaCompra : ViewModel() {
     /**
  * Aumenta en 1 la cantidad del producto en la posición indicada.
  *
- * @param indice posición del producto en la lista
  */
     fun aumentarCantidad(indice: Int) {
         _productos.value = _productos.value.mapIndexed { i, p ->
@@ -37,9 +36,7 @@ class ViewModelNuevaCompra : ViewModel() {
     }
 
     /**
- * Reduce en 1 la cantidad del producto. La cantidad mínima es 1, no puede llegar a 0.
- *
- * @param indice posición del producto en la lista
+ **Reduce en 1 la cantidad del producto. La cantidad mínima es 1, no puede llegar a 0.
  */
     fun disminuirCantidad(indice: Int) {
         _productos.value = _productos.value.mapIndexed { i, p ->
@@ -49,14 +46,12 @@ class ViewModelNuevaCompra : ViewModel() {
 
     /**
  * Elimina el producto en la posición indicada de la lista.
- *
- * @param indice posición del producto a eliminar
  */
     fun eliminarProducto(indice: Int) {
         _productos.value = _productos.value.filterIndexed { i, _ -> i != indice }
     }
 
-    /** Vacía la lista de productos. Lo llamo cuando el usuario guarda o cancela la compra. */
+    /** Vacía la lista de productos*/
     fun limpiar() {
         _productos.value = emptyList()
     }

@@ -8,9 +8,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 /**
- * Maneja el login, la sesión activa y el logout.
- * En la Entrega 1 el login es de mentira: cualquier email y contraseña funcionan.
- * En la Entrega 2 se conecta con un servidor real.
+ * Maneja el login, la sesión activa y el logout
+ * cualquier email y contraseña funcionan
  */
 class ViewModelAuth(private val repositorioUsuario: RepositorioUsuario) : ViewModel() {
 
@@ -22,7 +21,7 @@ class ViewModelAuth(private val repositorioUsuario: RepositorioUsuario) : ViewMo
 
     init { verificarSesion() }
 
-    /** Al crear el ViewModel revisa si ya hay una sesión guardada en DataStore. */
+    /** Al crear el ViewModel revisa si ya hay una sesión guardada en DataStore*/
     private fun verificarSesion() {
         viewModelScope.launch {
             runCatching {
@@ -34,7 +33,7 @@ class ViewModelAuth(private val repositorioUsuario: RepositorioUsuario) : ViewMo
         }
     }
 
-    /** Hace el login. Por ahora es de mentira, en Entrega 2 valida contra un servidor. */
+    /** Hace el login. Por ahora funciona con cualquier cosa, despues se modificara cuando haya Backend */
     fun iniciarSesion(email: String, password: String, onExito: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             _estadoUsuario.value = EstadoUi(cargando = true)
@@ -51,7 +50,7 @@ class ViewModelAuth(private val repositorioUsuario: RepositorioUsuario) : ViewMo
         }
     }
 
-    /** Cierra la sesión y borra todos los datos guardados en DataStore. */
+    /** Cierra la sesión y borra todos los datos guardados en DataStore*/
     fun cerrarSesion(onCompleto: () -> Unit) {
         viewModelScope.launch {
             runCatching {

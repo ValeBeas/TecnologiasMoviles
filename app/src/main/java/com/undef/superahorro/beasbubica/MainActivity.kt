@@ -14,8 +14,7 @@ import com.undef.superahorro.ui.navigation.GrafoNavegacion
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
 
 /**
- * Única Activity de la app. Acá guardo el estado del modo oscuro y arranco el NavHost.
- * En la Entrega 2 el modo oscuro se va a guardar en DataStore para que persista.
+ * Única Activity de la app
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

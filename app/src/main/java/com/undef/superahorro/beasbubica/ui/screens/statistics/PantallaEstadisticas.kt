@@ -25,9 +25,9 @@ import java.text.NumberFormat
 import java.util.Locale
 
 /**
- * Pantalla de estadísticas de gastos.
+ * Pantalla de estadísticas de gastos
  * Puedo filtrar por Semana, Mes, 3 Meses o Año. Muestra el total gastado, la cantidad de compras,
- * el promedio, el supermercado favorito y un gráfico de barras con los gastos por día.
+ * el promedio, el supermercado favorito y un gráfico de barras con los gastos por día
  */
 @Composable
 fun PantallaEstadisticas(navController: NavController, alVolverAtras: () -> Unit) {

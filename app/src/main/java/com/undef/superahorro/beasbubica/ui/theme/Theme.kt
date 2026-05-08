@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-// --- Paleta- de colores Claros ---
+// - Paleta de colores Claros -
 /**
  * Tema visual de la app
  * SuperAhorroTheme() es la función que envuelve toda la app en MainActivity
@@ -43,7 +43,7 @@ private val EsquemaClaro = lightColorScheme(
     onErrorContainer   = ColorError,
 )
 
-// --- Paleta de colores Oscuros ---
+// - Paleta de colores Oscuros -
 private val EsquemaOscuro = darkColorScheme(
     primary            = IndigoLight,
     onPrimary          = DarkBackground,
@@ -71,7 +71,7 @@ private val EsquemaOscuro = darkColorScheme(
     onErrorContainer   = ColorError,
 )
 
-// --- Tema principal de la app ---
+// - Tema principal de la app -
 // darkTheme: si es TRUE usa el esquema oscuro, si es FALSE usa el esquema claro
 @Composable
 fun SuperAhorroTheme(

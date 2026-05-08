@@ -18,7 +18,8 @@ import com.undef.superahorro.ui.theme.SuperAhorroTheme
 import com.undef.superahorro.viewmodel.ViewModelCompras
 
 /**
- * Muestra todas las compras en una lista. La más reciente aparece primero.
+ * Muestra todas las compras en una lista
+ * La más reciente aparece primero.
  */
 @Composable
 fun PantallaListaCompras(

@@ -21,7 +21,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
- * Pantalla de bienvenida con el logo animado.
+ * Pantalla de bienvenida con el logo animado
  */
 @Composable
 fun PantallaSplash(alNavegar: () -> Unit) {

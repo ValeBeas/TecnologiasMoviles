@@ -34,7 +34,7 @@ import java.util.Locale
 /**
  * Pantalla para cargar una compra nueva.
  * El usuario elige el supermercado, la fecha, agrega los productos y el total se calcula solo.
- * La foto del ticket se puede tomar con la cámara o elegir de la galería.
+ * La foto del ticket se puede tomar elegir de la galería.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

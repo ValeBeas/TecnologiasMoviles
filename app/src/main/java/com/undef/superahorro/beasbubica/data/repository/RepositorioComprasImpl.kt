@@ -147,6 +147,12 @@ class RepositorioComprasImpl : RepositorioCompras {
             pm(55, 17, "7790450670","Agua Villavicencio 1.5L",  4,  290.75),
             pm(56, 17, "7790450670","Café Nescafé 170g",        1, 1720.50),
         ),
+        18 to listOf(
+            pm(53, 18, "7790450670","Galletitas Oreo 120g",     2,  520.50),
+            pm(54, 18, "7790450670","Coca-Cola 2.25L",          3,  895.25),
+            pm(55, 18, "7790450670","Agua Villavicencio 1.5L",  4,  290.75),
+            pm(56, 18, "7790450670","Café Nescafé 170g",        1, 1720.50),
+        ),
     )
 
     /** Calcula el total de una compra sumando sus productos con calcularTotal(). */
@@ -176,6 +182,7 @@ class RepositorioComprasImpl : RepositorioCompras {
         Compra(15, "05/05/2026", "16:00", "Jumbo",     totalDeCompra(15), 2),
         Compra(16, "06/05/2026", "10:45", "Carrefour", totalDeCompra(16), 5),
         Compra(17, "07/05/2026", "08:30", "Coto",      totalDeCompra(17), 4),
+        Compra(18, "07/05/2026", "10:30", "Coto",      totalDeCompra(18), 4),
     )
 
     // Devuelve las compras ordenadas de mayor a menor ID (más reciente primero)

@@ -13,8 +13,8 @@ import com.undef.superahorro.ui.components.BarraSuperior
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
 
 /**
- * Pantalla de configuración. El toggle de modo oscuro cambia el tema de toda la app.
- * La moneda y las notificaciones son visuales por ahora, se conectan en la Entrega 2.
+ * Pantalla de configuración
+ * El toggle de modo oscuro cambia el tema de toda la app
  */
 @Composable
 fun PantallaConfiguracion(

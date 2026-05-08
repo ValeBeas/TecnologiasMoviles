@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
-/** Los cuatro períodos disponibles para filtrar las estadísticas. */
+/** Los cuatro filtrados de estadísticas. */
 enum class PeriodoEstadisticas(val etiqueta: String) {
     SEMANA("Semana"),
     MES("Mes"),
@@ -30,8 +30,7 @@ data class ResumenEstadisticas(
 )
 
 /**
- * Maneja los datos de la pantalla de estadísticas.
- * Cada período de filtro tiene su propia función para que sea fácil de entender y modificar.
+ * Maneja los datos de la pantalla de estadísticas
  */
 class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewModel() {
 
@@ -45,7 +44,7 @@ class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewM
 
     init { cargarEstadisticas() }
 
-    /** Cambia el filtro activo y recalcula los números sin volver a pedir datos. */
+    /** Cambia el filtro activo y recalcula los números sin volver a pedir datos*/
     fun cambiarPeriodo(periodo: PeriodoEstadisticas) {
         _periodoSeleccionado.value = periodo
         _estadoEstadisticas.value  = EstadoUi(datos = calcularEstadisticas(todasLasCompras, periodo))
@@ -71,7 +70,7 @@ class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewM
 
     // ── Parsing de fecha ─────────────────────────────────────────────────
 
-    /** Convierte una fecha en texto (DD/MM/AAAA) a un objeto Calendar para comparar fechas. */
+    /** Convierte una fecha en texto (DD/MM/AAAA) a un objeto Calendar para comparar fechas*/
     private fun parsearFecha(fecha: String): Calendar? {
         val partes = fecha.split("/")
         if (partes.size != 3) return null
@@ -84,9 +83,9 @@ class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewM
         }
     }
 
-    // ── Funciones de filtro — una por período ────────────────────────────
+    // ─ Funciones de filtro —
 
-    /** Devuelve true si la compra es de los últimos 7 días. */
+    /** Devuelve true si la compra es de los últimos 7 días*/
     private fun esDeLaSemana(fecha: String): Boolean {
         val compraCalendar = parsearFecha(fecha) ?: return false
         val inicio = Calendar.getInstance().apply {
@@ -101,7 +100,7 @@ class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewM
         return !compraCalendar.before(inicio) && !compraCalendar.after(fin)
     }
 
-    /** Devuelve true si la compra es del mes actual. */
+    /** Devuelve true si la compra es del mes actual*/
     private fun esDelMesActual(fecha: String): Boolean {
         val compraCalendar = parsearFecha(fecha) ?: return false
         val hoy = Calendar.getInstance()
@@ -109,7 +108,7 @@ class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewM
                compraCalendar.get(Calendar.MONTH) == hoy.get(Calendar.MONTH)
     }
 
-    /** Devuelve true si la compra es de los últimos 3 meses. */
+    /** Devuelve true si la compra es de los últimos 3 meses*/
     private fun esDeTresMeses(fecha: String): Boolean {
         val compraCalendar = parsearFecha(fecha) ?: return false
         val inicio = Calendar.getInstance().apply {
@@ -124,17 +123,16 @@ class ViewModelEstadisticas(private val repositorio: RepositorioCompras) : ViewM
         return !compraCalendar.before(inicio) && !compraCalendar.after(fin)
     }
 
-    /** Devuelve true si la compra es del año actual. */
+    /** Devuelve true si la compra es del año actual*/
     private fun esDelAnioActual(fecha: String): Boolean {
         val compraCalendar = parsearFecha(fecha) ?: return false
         return compraCalendar.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)
     }
 
-    // ── Cálculo de métricas ──────────────────────────────────────────────
+    // ─ Cálculo de métricas ─
 
     /**
- * Filtra las compras según el período elegido y calcula todos los números.
- * Elige qué función de filtro usar según el período con una referencia de función.
+ * Filtra las compras según el período elegido y calcula todos los números
  */
     private fun calcularEstadisticas(
         compras: List<Compra>,

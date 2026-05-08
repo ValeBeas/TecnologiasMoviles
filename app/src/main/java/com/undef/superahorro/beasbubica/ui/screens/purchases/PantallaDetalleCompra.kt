@@ -24,8 +24,8 @@ import java.text.NumberFormat
 import java.util.Locale
 
 /**
- * Pantalla con el detalle completo de una compra: fecha, supermercado, foto del ticket,
- * lista de productos y el total. El botón de compartir abre WhatsApp, Gmail o lo que tenga el usuario.
+ * Pantalla con el detalle completo de una compra: fecha, supermercado, foto del ticket,lista de productos y el total
+ * El botón de compartir abre WhatsApp, Gmail o lo que tenga el usuario
  */
 @Composable
 fun PantallaDetalleCompra(
