@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 
 /**
  * Barra superior que uso en todas las pantallas.
- * Le puedo pasar el título, si quiero la flecha de volver y botones extra a la derecha.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

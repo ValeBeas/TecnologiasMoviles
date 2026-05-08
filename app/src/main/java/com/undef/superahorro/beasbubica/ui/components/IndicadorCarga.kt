@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 
 /**
  * Spinner de carga centrado en la pantalla.
- * Lo muestro mientras el ViewModel está trayendo los datos.
  */
 @Composable
 fun IndicadorCarga(modifier: Modifier = Modifier) {

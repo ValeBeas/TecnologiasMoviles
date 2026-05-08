@@ -11,7 +11,6 @@ import com.undef.superahorro.ui.navigation.Pantalla
 
 /**
  * Barra con las 5 pestañas principales de la app.
- * Recibe el NavController para saber en qué pantalla estoy y marcar la pestaña correcta.
  */
 @Composable
 fun BarraNavegacionInferior(navController: NavController) {

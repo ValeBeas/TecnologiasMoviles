@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Tarjetita que muestra un número importante en estadísticas.
- * Tiene un ícono arriba, el valor grande en el medio y una etiqueta abajo que explica qué es.
  */
 @Composable
 fun TarjetaEstadistica(icono: ImageVector, etiqueta: String, valor: String, modifier: Modifier = Modifier) {

@@ -23,9 +23,7 @@ import com.undef.superahorro.ui.screens.statistics.PantallaEstadisticas
 import com.undef.superahorro.viewmodel.ViewModelNuevaCompra
 
 /**
- * Mapa de navegación completo de la app.
- * Creo el ViewModelNuevaCompra una sola vez acá con remember y lo comparto
- * entre NuevaCompra y NuevoProducto para que los productos no se pierdan al navegar.
+ * Mapa de navegación completo de la app.¡
  */
 @Composable
 fun GrafoNavegacion(
@@ -91,7 +89,6 @@ fun GrafoNavegacion(
             arguments = listOf(navArgument("compraId") { type = NavType.IntType })
         ) { entrada ->
             val compraId = entrada.arguments?.getInt("compraId") ?: 0
-            // Sin alAgregarProducto — ya no se puede agregar productos desde el historial
             PantallaDetalleCompra(
                 compraId      = compraId,
                 alVolverAtras = { navController.popBackStack() }
@@ -108,7 +105,6 @@ fun GrafoNavegacion(
         }
 
         // NuevoProducto: solo accesible desde NuevaCompra (no hay ruta desde historial)
-        // Al agregar, deposita el producto en el ViewModel compartido y vuelve
         composable(Pantalla.NuevoProducto.ruta) {
             PantallaNuevoProducto(
                 alAgregarProducto = { producto ->

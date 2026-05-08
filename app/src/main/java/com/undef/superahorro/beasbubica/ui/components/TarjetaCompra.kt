@@ -34,7 +34,6 @@ fun colorSupermercado(nombre: String): Color = when (nombre.lowercase()) {
 
 /**
  * Tarjeta que muestra una compra en la lista.
- * Tiene una franja de color a la izquierda para identificar el supermercado de un vistazo.
  */
 @Composable
 fun TarjetaCompra(compra: Compra, alHacerClick: () -> Unit) {
@@ -51,7 +50,6 @@ fun TarjetaCompra(compra: Compra, alHacerClick: () -> Unit) {
         colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
-            // Franja de color izquierda que identifica el supermercado
             Box(
                 modifier = Modifier
                     .width(6.dp)
@@ -65,7 +63,6 @@ fun TarjetaCompra(compra: Compra, alHacerClick: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    // Ícono del supermercado con fondo de color
                     Box(
                         modifier = Modifier
                             .size(44.dp)
