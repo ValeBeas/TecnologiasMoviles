@@ -30,7 +30,7 @@ import com.undef.superahorro.ui.theme.*
 fun PantallaPerfil(navController: NavController, alVolverAtras: () -> Unit, alCerrarSesion: () -> Unit) {
     var nombre     by remember { mutableStateOf("Valentina") }
     var apellido   by remember { mutableStateOf("Beas") }
-    var email      by remember { mutableStateOf("valentina.beas@undef.edu.ar") }
+    var email      by remember { mutableStateOf("vbeas461@alumnos.iua.edu.ar") }
     var telefono   by remember { mutableStateOf("+54 9 351 000-0000") }
     var mostrarDialogo by remember { mutableStateOf(false) }
 
