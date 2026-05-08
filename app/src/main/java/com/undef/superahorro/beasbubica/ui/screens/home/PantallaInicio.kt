@@ -30,7 +30,6 @@ import java.util.Locale
 
 /**
  * Pantalla principal que ve el usuario después de loguearse.
- * Muestra el gasto del mes, accesos rápidos a las secciones y las últimas 3 compras.
  */
 @Composable
 fun PantallaInicio(
@@ -39,7 +38,6 @@ fun PantallaInicio(
     alVerDetalleCompra: (Int) -> Unit,
     alAbrirConfiguracion: () -> Unit
 ) {
-    // ViewModel con datos mockeados — Entrega 1
     val viewModel = remember { ViewModelCompras(RepositorioComprasImpl()) }
     val estadoCompras by viewModel.estadoCompras.collectAsState()
     val compras = estadoCompras.datos ?: emptyList()
@@ -60,7 +58,6 @@ fun PantallaInicio(
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(padding)) {
 
-            // --- Header con gradiente índigo ---
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -83,7 +80,6 @@ fun PantallaInicio(
                         }
                     }
                     Spacer(Modifier.height(20.dp))
-                    // --- Tarjeta resumen del mes ---
                     Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = SurfaceWhite.copy(alpha = 0.15f)), shape = RoundedCornerShape(16.dp)) {
                         Row(modifier = Modifier.fillMaxWidth().padding(20.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                             Column {
@@ -99,7 +95,6 @@ fun PantallaInicio(
                 }
             }
 
-            // --- Accesos rápidos ---
             Spacer(Modifier.height(20.dp))
             Text("Accesos rápidos", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 20.dp))
             Spacer(Modifier.height(12.dp))
@@ -109,7 +104,6 @@ fun PantallaInicio(
                 AccesoRapido(Icons.Outlined.BarChart, "Estadísticas", Modifier.weight(1f)) { navController.navigate(Pantalla.Estadisticas.ruta) }
             }
 
-            // --- Últimas 3 compras ---
             Spacer(Modifier.height(24.dp))
             Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text("Últimas compras", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -123,7 +117,6 @@ fun PantallaInicio(
     }
 }
 
-/** Botón con ícono para ir rápido a una sección de la app. */
 @Composable
 private fun AccesoRapido(icono: ImageVector, etiqueta: String, modifier: Modifier, alHacerClick: () -> Unit) {
     Card(modifier = modifier, onClick = alHacerClick, colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer), shape = RoundedCornerShape(12.dp)) {

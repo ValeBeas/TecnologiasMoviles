@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.sp
 import com.undef.superahorro.R
 
 /**
- * Tipografías de la app: Nunito para títulos y DM Sans para el texto del cuerpo
+ * Tipografías de la app
  */
 val NunitoFontFamily = FontFamily(
     Font(R.font.nunito_regular, FontWeight.Normal),

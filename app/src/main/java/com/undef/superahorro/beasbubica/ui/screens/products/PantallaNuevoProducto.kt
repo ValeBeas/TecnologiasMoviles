@@ -63,7 +63,7 @@ fun PantallaNuevoProducto(
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
 
-            // ── Tabs: Ingresar datos / Mis productos ──────────────────────
+            // ── Tabs: Ingresar datos / Mis productos
             TabRow(selectedTabIndex = if (mostrarCatalogo) 1 else 0) {
                 Tab(
                     selected = !mostrarCatalogo,
@@ -78,7 +78,7 @@ fun PantallaNuevoProducto(
             }
 
             if (mostrarCatalogo) {
-                // ── Catálogo de productos frecuentes ─────────────────────
+                // ── Catálogo de productos frecuentes
                 Text(
                     "Tocá un producto para cargarlo en el formulario",
                     style    = MaterialTheme.typography.bodySmall,
@@ -118,7 +118,7 @@ fun PantallaNuevoProducto(
                     }
                 }
             } else {
-                // ── Formulario manual ─────────────────────────────────────
+                // ── Formulario manual
                 Column(
                     modifier = Modifier
                         .fillMaxSize()

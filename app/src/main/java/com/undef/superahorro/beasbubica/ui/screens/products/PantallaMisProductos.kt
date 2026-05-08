@@ -21,7 +21,6 @@ import java.util.Locale
 
 /**
  * Pantalla con el catálogo personal de productos frecuentes.
- * En la Entrega 2 se va a conectar a Room para guardar y editar los productos.
  */
 @Composable
 fun PantallaMisProductos(navController: NavController, alVolverAtras: () -> Unit) {

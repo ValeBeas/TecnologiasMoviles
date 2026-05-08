@@ -18,7 +18,7 @@ import com.undef.superahorro.ui.theme.SuperAhorroTheme
 
 /**
  * Pantalla de inicio de sesión.
- * Cualquier email y contraseña funcionan.
+ * (Cualquier email y contraseña funcionan)
  */
 @Composable
 fun PantallaLogin(alIniciarSesion: () -> Unit, alIrARegistro: () -> Unit) {

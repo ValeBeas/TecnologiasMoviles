@@ -33,7 +33,10 @@ import java.util.Locale
 
 /**
  * Pantalla para cargar una compra nueva.
- * El usuario elige el supermercado, la fecha, agrega los productos y el total se calcula solo.
+ * El usuario elige:
+ *  Supermercado
+ *  Fecha
+ *  Productos (el total se calcula solo)
  * La foto del ticket se puede tomar elegir de la galería.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +49,6 @@ fun PantallaNuevaCompra(
     val contexto    = LocalContext.current
     val formateador = NumberFormat.getNumberInstance(Locale("es", "AR"))
 
-    // ── Estado del formulario ─────────────────────────────────────────────
     var supermercado by remember { mutableStateOf("") }
     var otroMercado  by remember { mutableStateOf("") }
     var fecha        by remember { mutableStateOf("") }
@@ -54,10 +56,8 @@ fun PantallaNuevaCompra(
     var expandido    by remember { mutableStateOf(false) }
     var imagenUri    by remember { mutableStateOf<Uri?>(null) }
 
-    // URI temporal para la foto de la cámara — creada antes de disparar la cámara
     var uriCamara    by remember { mutableStateOf<Uri?>(null) }
 
-    // Productos gestionados por el ViewModel compartido
     val productos by viewModel.productos.collectAsState()
     val totalCalculado = productos.calcularTotal()
 
@@ -69,14 +69,12 @@ fun PantallaNuevaCompra(
         fecha.isNotBlank() &&
         productos.isNotEmpty()
 
-    // ── Cámara: TakePicture con URI propio — evita crash de TakePicturePreview ──
     val launcherCamara = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { exito ->
         if (exito) imagenUri = uriCamara   // foto guardada — usamos el URI que creamos
     }
 
-    // ── Galería: GetContent estándar ──────────────────────────────────────
     val launcherGaleria = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri -> imagenUri = uri }
@@ -116,7 +114,6 @@ fun PantallaNuevaCompra(
                 color = MaterialTheme.colorScheme.primary
             )
 
-            // Dropdown de supermercado
             ExposedDropdownMenuBox(
                 expanded = expandido,
                 onExpandedChange = { expandido = !expandido }
@@ -184,7 +181,7 @@ fun PantallaNuevaCompra(
 
             HorizontalDivider()
 
-            // ── Sección de productos ──────────────────────────────────────
+            // ── Sección de productos
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -205,7 +202,7 @@ fun PantallaNuevaCompra(
                 }
             }
 
-            // Lista de productos con botones +/-
+            // Botones +/-
             if (productos.isEmpty()) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -242,7 +239,7 @@ fun PantallaNuevaCompra(
                 }
             }
 
-            // ── Total autocalculado — solo lectura ────────────────────────
+            // ── Total autocalculado
             OutlinedTextField(
                 value         = if (totalCalculado > 0) "$ ${formateador.format(totalCalculado)}" else "",
                 onValueChange = {},
@@ -261,7 +258,7 @@ fun PantallaNuevaCompra(
 
             HorizontalDivider()
 
-            // ── Foto del ticket ───────────────────────────────────────────
+            // ── Foto del ticket
             Text(
                 "Foto del ticket",
                 style = MaterialTheme.typography.titleMedium,
@@ -344,10 +341,7 @@ fun PantallaNuevaCompra(
     }
 }
 
-/**
- * Fila de un producto dentro de la lista de la compra nueva.
- * Tiene los botones de + y − para cambiar la cantidad. La cantidad mínima es 1.
- */
+
 @Composable
 private fun FilaProducto(
     nombre: String,

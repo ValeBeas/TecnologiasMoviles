@@ -4,7 +4,6 @@ import com.undef.superahorro.domain.model.Producto
 
 /**
  * Lista de productos frecuentes que el usuario puede elegir al cargar una compra.
- * En la Entrega 2 esto va a venir de la base de datos Room.
  */
 val productosFrecuentes = listOf(
     Producto(nombre = "Yerba Taragüi 500g",      precio = 1850.0, codigo = "7790040552"),

@@ -25,7 +25,6 @@ import com.undef.superahorro.ui.theme.*
 
 /**
  * Pantalla del perfil
- * Muestra el avatar con las iniciales del usuario,los campos editables y el botón de cerrar sesión
  */
 @Composable
 fun PantallaPerfil(navController: NavController, alVolverAtras: () -> Unit, alCerrarSesion: () -> Unit) {

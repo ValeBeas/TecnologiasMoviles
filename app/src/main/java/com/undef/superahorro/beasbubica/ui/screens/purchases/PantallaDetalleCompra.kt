@@ -24,7 +24,13 @@ import java.text.NumberFormat
 import java.util.Locale
 
 /**
- * Pantalla con el detalle completo de una compra: fecha, supermercado, foto del ticket,lista de productos y el total
+ * Pantalla con el detalle completo de una compra:
+ *  Fecha
+ *  Supermercado
+ *  Foto del ticket
+ *  Lista de productos
+ *  Total
+
  * El botón de compartir abre WhatsApp, Gmail o lo que tenga el usuario
  */
 @Composable
@@ -38,7 +44,6 @@ fun PantallaDetalleCompra(
     val contexto = LocalContext.current
     val formateador = NumberFormat.getNumberInstance(Locale("es", "AR"))
 
-    // Carga los datos al entrar a la pantalla
     LaunchedEffect(compraId) {
         viewModel.cargarCompraPorId(compraId)
         viewModel.cargarProductosPorCompra(compraId)
@@ -97,7 +102,6 @@ fun PantallaDetalleCompra(
                 }
             }
 
-            // --- Placeholder foto del ticket ---
             item {
                 Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), shape = RoundedCornerShape(12.dp),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
@@ -140,7 +144,6 @@ fun PantallaDetalleCompra(
     }
 }
 
-/** Chip pequeño para mostrar la fecha o la hora con un ícono al lado. */
 @Composable
 private fun ChipInfo(icono: androidx.compose.ui.graphics.vector.ImageVector, texto: String) {
     Row(

@@ -19,8 +19,6 @@ import com.undef.superahorro.ui.theme.SuperAhorroTheme
 
 /**
  * Pantalla para crear una cuenta nueva.
- * El botón de registrarse no se habilita hasta que los campos estén completos
- * y las dos contraseñas sean iguales.
  */
 @Composable
 fun PantallaRegistro(alVolverAlLogin: () -> Unit, alRegistrarse: () -> Unit) {

@@ -26,8 +26,11 @@ import java.util.Locale
 
 /**
  * Pantalla de estadísticas de gastos
- * Puedo filtrar por Semana, Mes, 3 Meses o Año. Muestra el total gastado, la cantidad de compras,
- * el promedio, el supermercado favorito y un gráfico de barras con los gastos por día
+ * Puedo filtrar por:
+ *  Semana
+ *  Mes
+ *  3 Meses
+ *  Año
  */
 @Composable
 fun PantallaEstadisticas(navController: NavController, alVolverAtras: () -> Unit) {
@@ -61,7 +64,6 @@ fun PantallaEstadisticas(navController: NavController, alVolverAtras: () -> Unit
                 }
             }
 
-            // --- Mensaje si no hay compras en el período ---
             if (stats.cantidadCompras == 0) {
                 item {
                     Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
@@ -71,7 +73,6 @@ fun PantallaEstadisticas(navController: NavController, alVolverAtras: () -> Unit
                 return@LazyColumn
             }
 
-            // --- Tarjetas de métricas ---
             item {
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     TarjetaEstadistica(Icons.Outlined.AttachMoney, "Total gastado",   "$ ${formateador.format(stats.totalGastado)}",      Modifier.weight(1f))
@@ -84,7 +85,6 @@ fun PantallaEstadisticas(navController: NavController, alVolverAtras: () -> Unit
                 }
             }
 
-            // --- Gráfico de barras por día ---
             item {
                 Spacer(Modifier.height(20.dp))
                 Text("Gasto por día", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp))
@@ -114,7 +114,6 @@ fun PantallaEstadisticas(navController: NavController, alVolverAtras: () -> Unit
                 }
             }
 
-            // --- Distribución por supermercado ---
             item {
                 Spacer(Modifier.height(20.dp))
                 Text("Por supermercado", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp))
