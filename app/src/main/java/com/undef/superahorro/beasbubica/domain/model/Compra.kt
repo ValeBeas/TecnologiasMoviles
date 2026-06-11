@@ -1,14 +1,16 @@
 package com.undef.superahorro.domain.model
 
 /**
- * Modelo de una compra. Tiene los datos que muestra la app en pantalla.
+ * Modelo de una compra. Lo usan las pantallas y los ViewModels.
+ * idSupabase vincula el registro local con Supabase.
  */
 data class Compra(
     val id: Int = 0,
-    val fecha: String = "",          // Formato DD/MM/AAAA
-    val hora: String = "",           // Formato HH:MM
+    val idSupabase: String = "",
+    val fecha: String = "",
+    val hora: String = "",
     val supermercado: String = "",
     val total: Double = 0.0,
     val cantidadProductos: Int = 0,
-    val imagenTicket: String? = null // Ruta local a la foto del ticket
+    val imagenTicket: String? = null
 )
