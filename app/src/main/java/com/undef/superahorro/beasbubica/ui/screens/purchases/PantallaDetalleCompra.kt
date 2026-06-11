@@ -13,38 +13,45 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.draw.clip
+import coil.compose.AsyncImage
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.undef.superahorro.data.repository.RepositorioComprasImpl
-import com.undef.superahorro.ui.components.*
+import com.undef.superahorro.data.repository.RepositorioComprasSupabase
+import com.undef.superahorro.ui.components.BarraSuperior
+import com.undef.superahorro.ui.components.IndicadorCarga
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
 import com.undef.superahorro.viewmodel.ViewModelCompras
+import com.undef.superahorro.viewmodel.ViewModelMoneda
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
-/**
- * Pantalla con el detalle completo de una compra:
- *  Fecha
- *  Supermercado
- *  Foto del ticket
- *  Lista de productos
- *  Total
-
- * El botón de compartir abre WhatsApp, Gmail o lo que tenga el usuario
- */
+// Detalle completo de una compra con botones de editar, borrar y compartir.
+// Todos los precios respetan la moneda activa del ViewModelMoneda.
 @Composable
+/**
+ * Detalle completo de una compra: datos, foto del ticket y productos.
+ * Permite editar, borrar y compartir la compra.
+ */
 fun PantallaDetalleCompra(
-    compraId: Int,
-    alVolverAtras: () -> Unit
+    compraId: String,
+    viewModelMoneda: ViewModelMoneda,
+    alVolverAtras: () -> Unit,
+    alEditarCompra: (String) -> Unit = {}
 ) {
-    val viewModel = remember { ViewModelCompras(RepositorioComprasImpl()) }
-    val estadoCompra   by viewModel.compraSeleccionada.collectAsState()
+    val contexto        = LocalContext.current
+    val viewModel       = remember { ViewModelCompras(contexto) }
+    val estadoCompra    by viewModel.compraSeleccionada.collectAsState()
     val estadoProductos by viewModel.estadoProductos.collectAsState()
-    val contexto = LocalContext.current
-    val formateador = NumberFormat.getNumberInstance(Locale("es", "AR"))
+    val scope           = rememberCoroutineScope()
+
+    var mostrarDialogoBorrar  by remember { mutableStateOf(false) }
+    var borrando              by remember { mutableStateOf(false) }
 
     LaunchedEffect(compraId) {
+        if (compraId.isBlank()) return@LaunchedEffect
         viewModel.cargarCompraPorId(compraId)
         viewModel.cargarProductosPorCompra(compraId)
     }
@@ -52,92 +59,179 @@ fun PantallaDetalleCompra(
     val compra    = estadoCompra.datos
     val productos = estadoProductos.datos ?: emptyList()
 
+    // Diálogo de confirmación para borrar
+    if (mostrarDialogoBorrar && compra != null) {
+        AlertDialog(
+            onDismissRequest = { mostrarDialogoBorrar = false },
+            icon    = { Icon(Icons.Outlined.DeleteForever, null, tint = MaterialTheme.colorScheme.error) },
+            title   = { Text("Borrar compra") },
+            text    = { Text("¿Seguro que querés borrar la compra en ${compra.supermercado} del ${compra.fecha}? No se puede deshacer.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    scope.launch {
+                        borrando = true
+                        RepositorioComprasSupabase(contexto).eliminarCompra(compra)
+                        mostrarDialogoBorrar = false
+                        alVolverAtras()
+                    }
+                }) { Text("Borrar", color = MaterialTheme.colorScheme.error) }
+            },
+            dismissButton = {
+                TextButton(onClick = { mostrarDialogoBorrar = false }) { Text("Cancelar") }
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             BarraSuperior(
-                titulo = compra?.supermercado ?: "Detalle de compra",
+                titulo        = "Detalle de Compra",
                 mostrarVolver = true,
                 alVolverAtras = alVolverAtras,
                 acciones = {
-                    // --- Intent implícito: compartir resumen de la compra ---
+                    // Botón editar
+                    IconButton(onClick = { alEditarCompra(compraId) }) {
+                        Icon(Icons.Outlined.Edit, "Editar", tint = MaterialTheme.colorScheme.onPrimary)
+                    }
+                    // Botón borrar
+                    IconButton(onClick = { mostrarDialogoBorrar = true }, enabled = !borrando) {
+                        Icon(Icons.Outlined.DeleteOutline, "Borrar", tint = MaterialTheme.colorScheme.onPrimary)
+                    }
+                    // Botón compartir
                     IconButton(onClick = {
                         compra?.let {
-                            val texto = "Compra en ${it.supermercado}\nFecha: ${it.fecha} ${it.hora}\nTotal: $ ${formateador.format(it.total)}\nProductos: ${productos.size}"
+                            val texto = "Compra en ${it.supermercado}\nFecha: ${it.fecha} ${it.hora}\nTotal: ${viewModelMoneda.convertir(it.total)}"
                             val intent = Intent(Intent.ACTION_SEND).apply {
                                 type = "text/plain"
                                 putExtra(Intent.EXTRA_TEXT, texto)
                             }
                             contexto.startActivity(Intent.createChooser(intent, "Compartir compra"))
                         }
-                    }) { Icon(Icons.Outlined.Share, null, tint = MaterialTheme.colorScheme.onPrimary) }
-                    IconButton(onClick = {}) { Icon(Icons.Outlined.Edit, null, tint = MaterialTheme.colorScheme.onPrimary) }
+                    }) {
+                        Icon(Icons.Outlined.Share, null, tint = MaterialTheme.colorScheme.onPrimary)
+                    }
                 }
             )
         }
     ) { padding ->
-        if (compra == null) { IndicadorCarga(modifier = Modifier.padding(padding)); return@Scaffold }
+        if (estadoCompra.cargando) {
+            IndicadorCarga(modifier = Modifier.padding(padding))
+            return@Scaffold
+        }
 
-        LazyColumn(modifier = Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(bottom = 80.dp)) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize().padding(padding),
+            contentPadding = PaddingValues(bottom = 80.dp)
+        ) {
+            if (compra == null) return@LazyColumn
 
-            // --- Tarjeta resumen de la compra ---
+            // Encabezado con datos de la compra
             item {
-                Card(modifier = Modifier.fillMaxWidth().padding(16.dp), shape = RoundedCornerShape(16.dp), elevation = CardDefaults.cardElevation(2.dp)) {
-                    Column(modifier = Modifier.padding(20.dp)) {
-                        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    shape    = RoundedCornerShape(16.dp)
+                ) {
+                    Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text(compra.supermercado, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
+                        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                             ChipInfo(Icons.Outlined.CalendarMonth, compra.fecha)
                             ChipInfo(Icons.Outlined.Schedule, compra.hora)
                         }
-                        Spacer(Modifier.height(16.dp))
-                        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                            Column {
-                                Text("Total abonado", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                Text("$ ${formateador.format(compra.total)}", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.primary)
-                            }
-                            Column(horizontalAlignment = Alignment.End) {
-                                Text("Productos", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                Text("${productos.size}", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.ExtraBold)
-                            }
+                        HorizontalDivider()
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Total abonado", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(
+                                viewModelMoneda.convertir(compra.total),
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
                         }
                     }
                 }
             }
 
+            // Foto del ticket — solo si existe
             item {
-                Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
-                    Box(modifier = Modifier.fillMaxWidth().height(160.dp), contentAlignment = Alignment.Center) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(Icons.Outlined.Receipt, null, modifier = Modifier.size(48.dp), tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f))
-                            Spacer(Modifier.height(8.dp))
-                            OutlinedButton(onClick = {}) {
-                                Icon(Icons.Outlined.CameraAlt, null, Modifier.size(18.dp))
-                                Spacer(Modifier.width(6.dp))
-                                Text("Agregar foto del ticket")
-                            }
+                if (!compra.imagenTicket.isNullOrBlank()) {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 4.dp),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                "Foto del ticket",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                            AsyncImage(
+                                model = compra.imagenTicket,
+                                contentDescription = "Foto del ticket",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(220.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                            )
                         }
                     }
                 }
             }
 
-            // --- Lista de productos ---
+            // Título lista de productos
             item {
-                Text("Productos", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
-            }
-            items(productos) { producto ->
-                ItemProducto(producto = producto)
+                Text(
+                    "Productos (${productos.size})",
+                    style    = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                )
             }
 
-            // --- Total calculado de los productos ---
-            item {
+            // Productos con precios en moneda activa
+            items(productos) { prod ->
+                ListItem(
+                    headlineContent   = { Text(prod.nombre, fontWeight = FontWeight.SemiBold) },
+                    supportingContent = {
+                        Column {
+                            if (prod.codigo.isNotBlank()) Text("Cód: ${prod.codigo}", style = MaterialTheme.typography.labelSmall)
+                            Text("${prod.cantidad} × ${viewModelMoneda.convertir(prod.precio)}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    },
+                    trailingContent = {
+                        Text(
+                            viewModelMoneda.convertir(prod.precioTotal),
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                )
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
-                Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Total calculado", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Text(
-                        "$ ${formateador.format(productos.sumOf { it.precioTotal })}",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+            }
+
+            // Total calculado de los productos
+            item {
+                Card(modifier = Modifier.fillMaxWidth().padding(16.dp), shape = RoundedCornerShape(12.dp),
+                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text("Total calculado", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        Text(
+                            viewModelMoneda.convertir(productos.sumOf { it.precioTotal }),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.ExtraBold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
             }
         }
@@ -147,15 +241,15 @@ fun PantallaDetalleCompra(
 @Composable
 private fun ChipInfo(icono: androidx.compose.ui.graphics.vector.ImageVector, texto: String) {
     Row(
-        modifier = Modifier.border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(8.dp)).padding(horizontal = 12.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = Modifier.border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(8.dp)).padding(horizontal = 10.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Icon(icono, null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.primary)
-        Spacer(Modifier.width(6.dp))
-        Text(texto, style = MaterialTheme.typography.bodySmall)
+        Icon(icono, null, modifier = Modifier.size(14.dp), tint = MaterialTheme.colorScheme.primary)
+        Text(texto, style = MaterialTheme.typography.labelMedium)
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-private fun Vista() = SuperAhorroTheme { PantallaDetalleCompra(1, {}) }
+private fun Vista() = SuperAhorroTheme { Text("Preview - PantallaDetalleCompra") }
