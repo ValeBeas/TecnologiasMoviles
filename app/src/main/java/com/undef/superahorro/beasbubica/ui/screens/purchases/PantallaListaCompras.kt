@@ -12,23 +12,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.undef.superahorro.data.repository.RepositorioComprasImpl
+import androidx.compose.ui.platform.LocalContext
 import com.undef.superahorro.ui.components.*
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
+import com.undef.superahorro.viewmodel.ViewModelMoneda
 import com.undef.superahorro.viewmodel.ViewModelCompras
 
 /**
- * Muestra todas las compras en una lista
- * La más reciente aparece primero.
+ * Muestra todas las compras en una lista. La más reciente aparece primero.
  */
 @Composable
+/**
+ * Lista de todas las compras del usuario ordenadas por fecha.
+ * Lee de Room (caché local) para respuesta instantánea.
+ */
 fun PantallaListaCompras(
     navController: NavController,
-    alVerDetalle: (Int) -> Unit,
+    viewModelMoneda: ViewModelMoneda,
+    alVerDetalle: (String) -> Unit,
     alAgregarCompra: () -> Unit,
     alVolverAtras: () -> Unit
 ) {
-    val viewModel = remember { ViewModelCompras(RepositorioComprasImpl()) }
+    val contexto = LocalContext.current
+    val viewModel = remember { ViewModelCompras(contexto) }
     val estado by viewModel.estadoCompras.collectAsState()
 
     Scaffold(
@@ -58,7 +64,7 @@ fun PantallaListaCompras(
             )
             else -> LazyColumn(contentPadding = PaddingValues(vertical = 8.dp), modifier = Modifier.padding(padding)) {
                 items(estado.datos!!) { compra ->
-                    TarjetaCompra(compra = compra, alHacerClick = { alVerDetalle(compra.id) })
+                    TarjetaCompra(compra = compra, viewModelMoneda = viewModelMoneda, alHacerClick = { alVerDetalle(compra.idSupabase) })
                 }
                 item { Spacer(Modifier.height(80.dp)) }
             }
@@ -68,4 +74,4 @@ fun PantallaListaCompras(
 
 @Preview
 @Composable
-private fun Vista() = SuperAhorroTheme { PantallaListaCompras(rememberNavController(), {}, {}, {}) }
+private fun Vista() = SuperAhorroTheme { Text("Preview - PantallaListaCompras") }

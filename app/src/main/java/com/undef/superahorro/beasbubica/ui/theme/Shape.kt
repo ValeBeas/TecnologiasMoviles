@@ -6,6 +6,7 @@ import androidx.compose.ui.unit.dp
 
 /**
  * Bordes redondeados de los componentes de la app.
+ * Van desde 4dp para cosas pequeñas hasta 24dp para botones principales.
  */
 val AppShapes = Shapes(
     extraSmall = RoundedCornerShape(4.dp),

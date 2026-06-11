@@ -3,7 +3,8 @@ package com.undef.superahorro.data.network.dto
 import com.google.gson.annotations.SerializedName
 
 /**
- * Clase que recibe los datos de supermercados que manda la API en formato JSON.
+ * DTO de supermercado para la API REST genérica (ServicioApi).
+ * Estructura base para recibir información de supermercados desde un servidor.
  */
 data class DtoSupermercado(
     @SerializedName("id")       val id: Int,

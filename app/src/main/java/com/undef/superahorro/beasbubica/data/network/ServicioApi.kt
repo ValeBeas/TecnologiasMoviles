@@ -7,6 +7,10 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
+/**
+ * Endpoints de la API REST definidos con Retrofit.
+ * Estructura base lista para conectar con APIs de supermercados o precios.
+ */
 interface ServicioApi {
     @GET("supermercados")
     suspend fun obtenerSupermercados(): Response<List<DtoSupermercado>>

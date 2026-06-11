@@ -8,8 +8,12 @@ import androidx.compose.ui.Modifier
 
 /**
  * Spinner de carga centrado en la pantalla.
+ * Lo muestro mientras el ViewModel está trayendo los datos.
  */
 @Composable
+/**
+ * Spinner centrado que aparece mientras el ViewModel carga datos.
+ */
 fun IndicadorCarga(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)

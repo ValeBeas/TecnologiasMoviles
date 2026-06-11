@@ -1,11 +1,8 @@
 package com.undef.superahorro.viewmodel
 
 /**
- * Clase genérica para manejar el estado de cualquier pantalla.
- * Tiene tres estados:
- *  Cargando (muestra el spinner)
- *  Datos (muestra el contenido)
- *  Error (muestra el mensaje de error).
+ * Estado genérico de cualquier pantalla que carga datos.
+ * Tiene tres situaciones posibles: cargando, con datos, o con error.
  */
 data class EstadoUi<T>(
     val cargando: Boolean = false,

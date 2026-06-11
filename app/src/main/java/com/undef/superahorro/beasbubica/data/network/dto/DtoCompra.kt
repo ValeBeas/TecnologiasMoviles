@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 import com.undef.superahorro.domain.model.Compra
 
 /**
- * Clase que recibe los datos de compras que manda la API en formato JSON.
- * Tiene una función aDominio() para convertirlo al modelo que usa la app.
+ * DTO de compra para la API REST genérica (ServicioApi).
+ * Estructura base para intercambiar datos de compras con un servidor externo.
  */
 data class DtoCompra(
     @SerializedName("id")            val id: Int,
@@ -15,5 +15,5 @@ data class DtoCompra(
     @SerializedName("total")         val total: Double,
     @SerializedName("product_count") val cantidadProductos: Int
 ) {
-    fun aDominio() = Compra(id, fecha, hora, supermercado, total, cantidadProductos)
+    fun aDominio() = Compra(id = id, idSupabase = "", fecha = fecha, hora = hora, supermercado = supermercado, total = total, cantidadProductos = cantidadProductos)
 }

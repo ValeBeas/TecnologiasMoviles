@@ -15,13 +15,13 @@ import java.util.Locale
 
 /**
  * Fila de un producto para mostrar en el detalle de una compra.
- * Muestra:
- *  Nombre
- *  Código de barras
- *  Cantidad Precio unitario
- *  Precio total.
+ * Muestra el nombre, el código de barras, la cantidad y el precio unitario y total.
  */
 @Composable
+/**
+ * Fila de un producto en el detalle de una compra.
+ * Muestra nombre, código de barras, cantidad, precio unitario y total.
+ */
 fun ItemProducto(producto: Producto, alEliminar: (() -> Unit)? = null) {
     val formateador = NumberFormat.getNumberInstance(Locale("es", "AR"))
     HorizontalDivider()

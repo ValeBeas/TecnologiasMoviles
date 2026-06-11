@@ -4,12 +4,8 @@ import java.text.NumberFormat
 import java.util.Locale
 
 /**
- * Modelo para agregar productos en Nueva Compra.
- * Solo tiene los campos que el usuario carga:
- *  Nombre
- *  Cantidad
- *  Costo
- *  Código de barras.
+ * Modelo liviano para el formulario de nueva compra.
+ * Tiene solo los datos que el usuario ingresa: nombre, cantidad, costo y código.
  */
 data class ProductoEnCompra(
     val nombre: String,
@@ -17,11 +13,14 @@ data class ProductoEnCompra(
     val costo: Double,
     val codigoBarras: String = ""  // Opcional — el usuario puede escanearlo o dejarlo vacío
 ) {
+    /** Subtotal del ítem = cantidad × costo. Se calcula solo, no se guarda. */
     val subtotal: Double get() = cantidad * costo
 
+    /** Subtotal con formato de moneda argentina para mostrar en pantalla. */
     val subtotalFormateado: String
         get() = NumberFormat.getNumberInstance(Locale("es", "AR")).format(subtotal)
 
+    /** Costo unitario con formato de moneda argentina para mostrar en pantalla. */
     val costoFormateado: String
         get() = NumberFormat.getNumberInstance(Locale("es", "AR")).format(costo)
 }

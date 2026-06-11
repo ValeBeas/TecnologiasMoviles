@@ -14,6 +14,10 @@ import androidx.compose.ui.unit.dp
  * Tiene un ícono, un título, un subtítulo y opcionalmente un botón de acción.
  */
 @Composable
+/**
+ * Pantalla vacía con ícono, título y subtítulo.
+ * Se muestra cuando una lista no tiene elementos todavía.
+ */
 fun EstadoVacio(icono: ImageVector, titulo: String, subtitulo: String, etiquetaAccion: String? = null, alAccionar: () -> Unit = {}) {
     Column(
         modifier = Modifier.fillMaxSize().padding(32.dp),
