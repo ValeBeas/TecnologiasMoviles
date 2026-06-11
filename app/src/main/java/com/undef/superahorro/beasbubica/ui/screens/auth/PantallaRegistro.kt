@@ -16,47 +16,160 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.undef.superahorro.ui.components.BarraSuperior
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
+import com.undef.superahorro.viewmodel.ViewModelAuth
 
 /**
  * Pantalla para crear una cuenta nueva.
+ * El botón de registrarse se habilita solo cuando las contraseñas coinciden
+ * y todos los campos están completos.
  */
 @Composable
-fun PantallaRegistro(alVolverAlLogin: () -> Unit, alRegistrarse: () -> Unit) {
+/**
+ * Pantalla de registro de nuevo usuario.
+ * El botón se habilita solo cuando las contraseñas coinciden y los campos están completos.
+ */
+fun PantallaRegistro(
+    viewModelAuth: ViewModelAuth,
+    alVolverAlLogin: () -> Unit,
+    alRegistrarse: () -> Unit
+) {
     var nombre by remember { mutableStateOf("") }
     var apellido by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
     var confirmar by remember { mutableStateOf("") }
     var verContrasena by remember { mutableStateOf(false) }
+    var mensajeError by remember { mutableStateOf("") }
 
-    Scaffold(topBar = { BarraSuperior("Crear cuenta", mostrarVolver = true, alVolverAtras = alVolverAlLogin) }) { padding ->
+    val estadoAuth by viewModelAuth.estadoUsuario.collectAsState()
+    val cargando = estadoAuth.cargando
+
+    val contrasenaValida = contrasena.length >= 6
+    val contrasenaCoincide = contrasena == confirmar
+    val formularioValido = nombre.isNotBlank() && email.isNotBlank() &&
+        contrasenaValida && contrasenaCoincide
+
+    Scaffold(topBar = {
+        BarraSuperior("Crear cuenta", mostrarVolver = true, alVolverAtras = alVolverAlLogin)
+    }) { padding ->
         Column(
-            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(padding).padding(24.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(padding)
+                .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Spacer(Modifier.height(8.dp))
-            Text("Completá tus datos", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+            Text(
+                "Completá tus datos",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedTextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre") }, singleLine = true, modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.medium)
-                OutlinedTextField(value = apellido, onValueChange = { apellido = it }, label = { Text("Apellido") }, singleLine = true, modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.medium)
+                OutlinedTextField(
+                    value = nombre,
+                    onValueChange = { nombre = it; mensajeError = "" },
+                    label = { Text("Nombre *") },
+                    singleLine = true,
+                    modifier = Modifier.weight(1f),
+                    shape = MaterialTheme.shapes.medium
+                )
+                OutlinedTextField(
+                    value = apellido,
+                    onValueChange = { apellido = it },
+                    label = { Text("Apellido") },
+                    singleLine = true,
+                    modifier = Modifier.weight(1f),
+                    shape = MaterialTheme.shapes.medium
+                )
             }
-            OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Correo electrónico") }, leadingIcon = { Icon(Icons.Outlined.Email, null) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email), singleLine = true, modifier = Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium)
-            OutlinedTextField(value = contrasena, onValueChange = { contrasena = it }, label = { Text("Contraseña") }, leadingIcon = { Icon(Icons.Outlined.Lock, null) },
-                trailingIcon = { IconButton(onClick = { verContrasena = !verContrasena }) { Icon(if (verContrasena) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility, null) } },
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it; mensajeError = "" },
+                label = { Text("Correo electrónico *") },
+                leadingIcon = { Icon(Icons.Outlined.Email, null) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.medium
+            )
+            OutlinedTextField(
+                value = contrasena,
+                onValueChange = { contrasena = it; mensajeError = "" },
+                label = { Text("Contraseña * (mínimo 6 caracteres)") },
+                leadingIcon = { Icon(Icons.Outlined.Lock, null) },
+                trailingIcon = {
+                    IconButton(onClick = { verContrasena = !verContrasena }) {
+                        Icon(
+                            if (verContrasena) Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
+                            null
+                        )
+                    }
+                },
                 visualTransformation = if (verContrasena) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password), singleLine = true, modifier = Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium)
-            OutlinedTextField(value = confirmar, onValueChange = { confirmar = it }, label = { Text("Confirmar contraseña") }, leadingIcon = { Icon(Icons.Outlined.Lock, null) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                isError = contrasena.isNotEmpty() && !contrasenaValida,
+                supportingText = {
+                    if (contrasena.isNotEmpty() && !contrasenaValida)
+                        Text("Mínimo 6 caracteres")
+                },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.medium
+            )
+            OutlinedTextField(
+                value = confirmar,
+                onValueChange = { confirmar = it },
+                label = { Text("Confirmar contraseña *") },
+                leadingIcon = { Icon(Icons.Outlined.Lock, null) },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                isError = confirmar.isNotEmpty() && contrasena != confirmar,
-                supportingText = { if (confirmar.isNotEmpty() && contrasena != confirmar) Text("Las contraseñas no coinciden") },
-                singleLine = true, modifier = Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium)
+                isError = confirmar.isNotEmpty() && !contrasenaCoincide,
+                supportingText = {
+                    if (confirmar.isNotEmpty() && !contrasenaCoincide)
+                        Text("Las contraseñas no coinciden")
+                },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.medium
+            )
+
+            if (mensajeError.isNotBlank()) {
+                Text(
+                    mensajeError,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
             Spacer(Modifier.height(8.dp))
-            Button(onClick = alRegistrarse, modifier = Modifier.fillMaxWidth().height(52.dp), shape = MaterialTheme.shapes.extraLarge,
-                enabled = nombre.isNotBlank() && email.isNotBlank() && contrasena.isNotBlank() && contrasena == confirmar) {
-                Text("Crear cuenta", style = MaterialTheme.typography.labelLarge)
+            Button(
+                onClick = {
+                    viewModelAuth.registrarse(
+                        email = email.trim(),
+                        contrasena = contrasena,
+                        nombre = nombre.trim(),
+                        apellido = apellido.trim(),
+                        onExito = alRegistrarse,
+                        onError = { mensajeError = it }
+                    )
+                },
+                modifier = Modifier.fillMaxWidth().height(52.dp),
+                shape = MaterialTheme.shapes.extraLarge,
+                enabled = formularioValido && !cargando
+            ) {
+                if (cargando) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Text("Crear cuenta", style = MaterialTheme.typography.labelLarge)
+                }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("¿Ya tenés cuenta?")
@@ -65,7 +178,3 @@ fun PantallaRegistro(alVolverAlLogin: () -> Unit, alRegistrarse: () -> Unit) {
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-private fun Vista() = SuperAhorroTheme { PantallaRegistro({}, {}) }
