@@ -3,8 +3,11 @@ package com.undef.superahorro.data.local.db.entity
 import androidx.room.*
 import com.undef.superahorro.domain.model.Producto
 
+// Entidad Room para la tabla 'productos'.
+// FK a 'compras' con CASCADE DELETE. idSupabase para sincronización.
 /**
- * Tabla 'productos' en la base de datos local.
+ * Fila de la tabla 'productos' en Room.
+ * Se borra en cascada si se elimina la compra asociada.
  */
 @Entity(
     tableName = "productos",
@@ -12,19 +15,39 @@ import com.undef.superahorro.domain.model.Producto
         entity = EntidadCompra::class,
         parentColumns = ["id"],
         childColumns = ["compraId"],
-        onDelete = ForeignKey.CASCADE  // Si se borra la compra, se borran sus productos
-    )]
+        onDelete = ForeignKey.CASCADE
+    )],
+    indices = [Index("compraId")]
 )
 data class EntidadProducto(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val compraId: Int,
-    val codigo: String,
+    val idSupabase: String = "",
+    val idCompraSupabase: String = "",
+    val codigo: String = "",
     val nombre: String,
-    val descripcion: String,
     val cantidad: Int,
     val precio: Double
 ) {
-    fun aDominio() = Producto(id, compraId, codigo, nombre, descripcion, cantidad, precio)
+    fun aDominio() = Producto(
+        id = id,
+        compraId = compraId,
+        idSupabase = idSupabase,
+        idCompraSupabase = idCompraSupabase,
+        codigo = codigo,
+        nombre = nombre,
+        cantidad = cantidad,
+        precio = precio
+    )
 }
 
-fun Producto.aEntidad() = EntidadProducto(id, compraId, codigo, nombre, descripcion, cantidad, precio)
+fun Producto.aEntidad() = EntidadProducto(
+    id = id,
+    compraId = compraId,
+    idSupabase = idSupabase,
+    idCompraSupabase = idCompraSupabase,
+    codigo = codigo,
+    nombre = nombre,
+    cantidad = cantidad,
+    precio = precio
+)
