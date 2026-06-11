@@ -7,7 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ShoppingBag
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,38 +16,45 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.undef.superahorro.domain.model.Compra
 import com.undef.superahorro.ui.theme.*
-import java.text.NumberFormat
-import java.util.Locale
+import com.undef.superahorro.viewmodel.ViewModelMoneda
 
+// Devuelve el color que le corresponde a cada supermercado.
 /**
- * Devuelve el color que le corresponde a cada supermercado.
- * Lo uso tanto en las tarjetas como en las estadísticas.
+ * Devuelve el color de la franja lateral según el supermercado.
+ * Se usa en las tarjetas del historial y en las estadísticas.
  */
 fun colorSupermercado(nombre: String): Color = when (nombre.lowercase()) {
-    "coto"                -> ColorCoto
-    "carrefour"           -> ColorCarrefour
-    "día", "dia"          -> ColorDia
-    "jumbo"               -> ColorJumbo
-    "walmart"             -> ColorWalmart
-    else                  -> ColorDefault
+    "coto"         -> ColorCoto
+    "carrefour"    -> ColorCarrefour
+    "día", "dia"   -> ColorDia
+    "jumbo"        -> ColorJumbo
+    "walmart"      -> ColorWalmart
+    else           -> ColorDefault
 }
 
 /**
- * Tarjeta que muestra una compra en la lista.
+ * Tarjeta que muestra el resumen de una compra en la lista.
+ * La franja de color a la izquierda identifica el supermercado.
+ * Muestra el precio en la moneda activa usando ViewModelMoneda.
+ *
+ * @param alHacerClick acción que se ejecuta cuando el usuario toca la tarjeta
  */
 @Composable
-fun TarjetaCompra(compra: Compra, alHacerClick: () -> Unit) {
+fun TarjetaCompra(
+    compra: Compra,
+    viewModelMoneda: ViewModelMoneda,
+    alHacerClick: () -> Unit
+) {
     val colorAcento = colorSupermercado(compra.supermercado)
-    val formateador = NumberFormat.getNumberInstance(Locale("es", "AR"))
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp)
             .clickable(onClick = alHacerClick),
-        shape     = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors    = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Box(
@@ -79,9 +86,8 @@ fun TarjetaCompra(compra: Compra, alHacerClick: () -> Unit) {
                         Text("${compra.cantidadProductos} productos", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
-                // Total de la compra
                 Text(
-                    "$ ${formateador.format(compra.total)}",
+                    viewModelMoneda.convertir(compra.total),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.primary

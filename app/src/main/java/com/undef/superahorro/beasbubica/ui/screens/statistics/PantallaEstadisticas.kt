@@ -16,25 +16,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.undef.superahorro.data.repository.RepositorioComprasImpl
+import androidx.compose.ui.platform.LocalContext
 import com.undef.superahorro.ui.components.*
 import com.undef.superahorro.ui.theme.*
 import com.undef.superahorro.viewmodel.PeriodoEstadisticas
 import com.undef.superahorro.viewmodel.ViewModelEstadisticas
+import com.undef.superahorro.viewmodel.ViewModelMoneda
 import java.text.NumberFormat
 import java.util.Locale
 
 /**
- * Pantalla de estadísticas de gastos
- * Puedo filtrar por:
- *  Semana
- *  Mes
- *  3 Meses
- *  Año
+ * Estadísticas de gastos con filtros por Semana, Mes, 3 Meses y Año.
+ * Muestra total, cantidad de compras, promedio y distribución por supermercado.
  */
 @Composable
-fun PantallaEstadisticas(navController: NavController, alVolverAtras: () -> Unit) {
-    val viewModel  = remember { ViewModelEstadisticas(RepositorioComprasImpl()) }
+fun PantallaEstadisticas(
+    navController: NavController,
+    viewModelMoneda: ViewModelMoneda,
+    alVolverAtras: () -> Unit
+) {
+    val contextoEst = LocalContext.current
+    val viewModel  = remember { ViewModelEstadisticas(contextoEst) }
     val estadoStats by viewModel.estadoEstadisticas.collectAsState()
     val periodo    by viewModel.periodoSeleccionado.collectAsState()
     val stats      = estadoStats.datos
@@ -64,6 +66,7 @@ fun PantallaEstadisticas(navController: NavController, alVolverAtras: () -> Unit
                 }
             }
 
+            // --- Mensaje si no hay compras en el período ---
             if (stats.cantidadCompras == 0) {
                 item {
                     Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
@@ -73,18 +76,20 @@ fun PantallaEstadisticas(navController: NavController, alVolverAtras: () -> Unit
                 return@LazyColumn
             }
 
+            // --- Tarjetas de métricas ---
             item {
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    TarjetaEstadistica(Icons.Outlined.AttachMoney, "Total gastado",   "$ ${formateador.format(stats.totalGastado)}",      Modifier.weight(1f))
+                    TarjetaEstadistica(Icons.Outlined.AttachMoney, "Total gastado",   viewModelMoneda.convertir(stats.totalGastado),      Modifier.weight(1f))
                     TarjetaEstadistica(Icons.Outlined.ShoppingCart, "Compras",        "${stats.cantidadCompras}",                         Modifier.weight(1f))
                 }
                 Spacer(Modifier.height(12.dp))
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    TarjetaEstadistica(Icons.Outlined.TrendingDown, "Promedio",       "$ ${formateador.format(stats.promedioPorCompra)}", Modifier.weight(1f))
+                    TarjetaEstadistica(Icons.Outlined.TrendingDown, "Promedio",       viewModelMoneda.convertir(stats.promedioPorCompra), Modifier.weight(1f))
                     TarjetaEstadistica(Icons.Outlined.Store,        "Favorito",        stats.supermercadoFavorito.take(9),                Modifier.weight(1f))
                 }
             }
 
+            // --- Gráfico de barras por día ---
             item {
                 Spacer(Modifier.height(20.dp))
                 Text("Gasto por día", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp))
@@ -106,7 +111,7 @@ fun PantallaEstadisticas(navController: NavController, alVolverAtras: () -> Unit
                                             .background(IndigoMedium))
                                     }
                                     Spacer(Modifier.width(8.dp))
-                                    Text("$ ${formateador.format(monto / 1000)}K", style = MaterialTheme.typography.labelSmall, modifier = Modifier.width(52.dp))
+                                    Text(viewModelMoneda.convertir(monto), style = MaterialTheme.typography.labelSmall, modifier = Modifier.width(72.dp), maxLines = 1)
                                 }
                             }
                         }
@@ -114,6 +119,7 @@ fun PantallaEstadisticas(navController: NavController, alVolverAtras: () -> Unit
                 }
             }
 
+            // --- Distribución por supermercado ---
             item {
                 Spacer(Modifier.height(20.dp))
                 Text("Por supermercado", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp))
@@ -130,7 +136,7 @@ fun PantallaEstadisticas(navController: NavController, alVolverAtras: () -> Unit
                                     Spacer(Modifier.width(8.dp))
                                     Text(super_, style = MaterialTheme.typography.bodyMedium)
                                 }
-                                Text("$pct% · $ ${formateador.format(monto)}", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = color)
+                                Text("$pct% · ${viewModelMoneda.convertir(monto)}", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = color)
                             }
                         }
                     }
@@ -142,4 +148,4 @@ fun PantallaEstadisticas(navController: NavController, alVolverAtras: () -> Unit
 
 @Preview
 @Composable
-private fun Vista() = SuperAhorroTheme { PantallaEstadisticas(rememberNavController(), {}) }
+private fun Vista() = SuperAhorroTheme { Text("Preview - PantallaEstadisticas") }
