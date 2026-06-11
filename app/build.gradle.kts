@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -13,8 +14,12 @@ android {
         minSdk = 25
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionName = "2.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Supabase credentials — accesibles desde el código como BuildConfig.SUPABASE_URL
+        buildConfigField("String", "SUPABASE_URL", "\"https://gnwuwkdnabarbvwxetqu.supabase.co\"")
+        buildConfigField("String", "SUPABASE_ANON_KEY", "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdud3V3a2RuYWJhcmJ2d3hldHF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMDcwMzQsImV4cCI6MjA5NjY4MzAzNH0.KaKDXw1zipRA6a_99IDKXIXVp1Wuw2I_0OAmV9yth1s\"")
     }
 
     buildTypes {
@@ -32,6 +37,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -62,10 +68,20 @@ dependencies {
     // DataStore
     implementation(libs.androidx.datastore.preferences)
 
-    // Retrofit + OkHttp
+    // Retrofit + OkHttp (para la API del dólar)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp.logging.interceptor)
+
+    // Supabase
+    implementation(libs.supabase.postgrest)
+    implementation(libs.supabase.auth)
+    implementation(libs.supabase.storage)
+    implementation(libs.supabase.realtime)
+
+    // Ktor (requerido por Supabase)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.core)
 
     // Coil (imágenes)
     implementation(libs.coil.compose)
