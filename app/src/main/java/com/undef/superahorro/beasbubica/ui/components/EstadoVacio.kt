@@ -9,10 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
-/**
- * Pantalla que muestro cuando una lista no tiene nada.
- * Tiene un ícono, un título, un subtítulo y opcionalmente un botón de acción.
- */
+
 @Composable
 /**
  * Pantalla vacía con ícono, título y subtítulo.

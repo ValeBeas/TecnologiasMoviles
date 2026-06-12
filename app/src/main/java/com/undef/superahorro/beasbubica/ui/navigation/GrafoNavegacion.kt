@@ -25,11 +25,7 @@ import com.undef.superahorro.viewmodel.ViewModelAuth
 import com.undef.superahorro.viewmodel.ViewModelMoneda
 import com.undef.superahorro.viewmodel.ViewModelNuevaCompra
 
-/**
- * Define cómo se conectan todas las pantallas de la app.
- * El ViewModelNuevaCompra se crea acá una sola vez y lo comparten
- * NuevaCompra y NuevoProducto para pasar los productos entre ellas.
- */
+
 @Composable
 /**
  * Define cómo se conectan todas las pantallas de la app.

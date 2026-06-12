@@ -37,7 +37,7 @@ class RepositorioComprasSupabase(private val contexto: Context) : RepositorioCom
     private val usuarioId: String
         get() = supabase.auth.currentUserOrNull()?.id ?: ""
 
-    // ─── SINCRONIZACIÓN ──────────────────────────────────────────────────────
+    // SINCRONIZACIÓN
 
     /**
      * Sincronización completa al abrir la app.
@@ -83,7 +83,7 @@ class RepositorioComprasSupabase(private val contexto: Context) : RepositorioCom
         }
     }
 
-    // ─── LEER ────────────────────────────────────────────────────────────────
+    // LEER
 
     /** Las pantallas leen de Room (Flow reactivo — sin llamadas a red). */
     override fun obtenerCompras(): Flow<List<Compra>> =
@@ -132,7 +132,7 @@ class RepositorioComprasSupabase(private val contexto: Context) : RepositorioCom
         }
     }
 
-    // ─── ESCRIBIR ────────────────────────────────────────────────────────────
+    // ESCRIBIR
 
     /**
      * Agrega una compra nueva.
@@ -289,7 +289,7 @@ class RepositorioComprasSupabase(private val contexto: Context) : RepositorioCom
         }
     }
 
-    // ─── LEGACY / INTERFACE ──────────────────────────────────────────────────
+    // LEGACY / INTERFACE
 
     override suspend fun insertarCompra(compra: Compra): Long =
         daoCompra.insertar(compra.aEntidad())

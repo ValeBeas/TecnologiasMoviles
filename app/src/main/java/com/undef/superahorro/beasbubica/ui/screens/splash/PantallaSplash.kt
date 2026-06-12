@@ -20,11 +20,7 @@ import com.undef.superahorro.viewmodel.ViewModelAuth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-/**
- * Pantalla de bienvenida que se ve al abrir la app.
- * Tiene una animación de entrada y verifica si hay sesión guardada.
- * Si hay sesión → Home. Si no → Login.
- */
+
 @Composable
 /**
  * Pantalla de bienvenida con animación de entrada.

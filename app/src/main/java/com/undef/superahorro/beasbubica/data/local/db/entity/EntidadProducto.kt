@@ -3,11 +3,9 @@ package com.undef.superahorro.data.local.db.entity
 import androidx.room.*
 import com.undef.superahorro.domain.model.Producto
 
-// Entidad Room para la tabla 'productos'.
-// FK a 'compras' con CASCADE DELETE. idSupabase para sincronización.
 /**
- * Fila de la tabla 'productos' en Room.
- * Se borra en cascada si se elimina la compra asociada.
+ * Entidad Room para la tabla 'productos'.
+ * Se borra en cascada si se elimina la compra asociada. idSupabase para sincronización.
  */
 @Entity(
     tableName = "productos",

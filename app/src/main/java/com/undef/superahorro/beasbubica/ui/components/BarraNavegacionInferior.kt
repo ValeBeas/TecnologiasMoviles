@@ -11,10 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.undef.superahorro.ui.navigation.Pantalla
 
-/**
- * Barra con las 5 pestañas principales de la app.
- * Recibe el NavController para saber en qué pantalla estoy y marcar la pestaña correcta.
- */
+
 @Composable
 /**
  * Barra con las 6 pestañas principales de la app.

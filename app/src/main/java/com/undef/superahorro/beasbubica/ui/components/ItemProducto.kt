@@ -13,10 +13,7 @@ import com.undef.superahorro.domain.model.Producto
 import java.text.NumberFormat
 import java.util.Locale
 
-/**
- * Fila de un producto para mostrar en el detalle de una compra.
- * Muestra el nombre, el código de barras, la cantidad y el precio unitario y total.
- */
+
 @Composable
 /**
  * Fila de un producto en el detalle de una compra.

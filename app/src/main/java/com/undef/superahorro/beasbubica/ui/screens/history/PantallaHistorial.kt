@@ -21,10 +21,6 @@ import com.undef.superahorro.viewmodel.ViewModelCompras
 import java.text.NumberFormat
 import java.util.Locale
 
-/**
- * Muestra el historial completo de compras agrupado por mes y año.
- * No tiene filtros. Las compras más recientes aparecen primero.
- */
 @Composable
 /**
  * Historial de compras agrupado por mes y año.

@@ -18,11 +18,7 @@ import com.undef.superahorro.ui.components.BarraSuperior
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
 import com.undef.superahorro.viewmodel.ViewModelAuth
 
-/**
- * Pantalla para crear una cuenta nueva.
- * El botón de registrarse se habilita solo cuando las contraseñas coinciden
- * y todos los campos están completos.
- */
+
 @Composable
 /**
  * Pantalla de registro de nuevo usuario.

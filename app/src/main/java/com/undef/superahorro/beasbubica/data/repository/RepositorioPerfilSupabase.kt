@@ -11,7 +11,6 @@ import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
-// Maneja el perfil del usuario y su catálogo personal de productos en Supabase.
 /**
  * Maneja el perfil del usuario y su catálogo personal de productos en Supabase.
  * El perfil se guarda también en DataStore para mostrarlo sin llamadas de red.

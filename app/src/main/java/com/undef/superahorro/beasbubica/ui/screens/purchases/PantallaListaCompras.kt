@@ -18,9 +18,7 @@ import com.undef.superahorro.ui.theme.SuperAhorroTheme
 import com.undef.superahorro.viewmodel.ViewModelMoneda
 import com.undef.superahorro.viewmodel.ViewModelCompras
 
-/**
- * Muestra todas las compras en una lista. La más reciente aparece primero.
- */
+
 @Composable
 /**
  * Lista de todas las compras del usuario ordenadas por fecha.

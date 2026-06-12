@@ -4,11 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.undef.superahorro.domain.model.Compra
 
-// Entidad Room que representa la tabla 'compras'.
-// idSupabase guarda el UUID de Supabase para sincronización.
 /**
- * Fila de la tabla 'compras' en Room.
- * idSupabase vincula el registro local con su equivalente en Supabase.
+ * Entidad Room que representa la tabla 'compras'.
+ * idSupabase guarda el UUID de Supabase para sincronización.
  */
 @Entity(tableName = "compras")
 data class EntidadCompra(

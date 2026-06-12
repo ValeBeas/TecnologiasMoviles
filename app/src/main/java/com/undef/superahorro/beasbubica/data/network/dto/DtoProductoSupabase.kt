@@ -4,9 +4,6 @@ import com.undef.superahorro.domain.model.Producto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * DTO que mapea la tabla 'productos' de Supabase.
- */
 @Serializable
 /**
  * Mapea una fila de la tabla 'productos' de Supabase.

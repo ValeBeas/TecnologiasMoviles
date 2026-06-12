@@ -11,11 +11,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.*
 import java.util.Calendar
 
-/**
- * Campo de fecha con formato DD/MM/AAAA.
- * Las barras "/" están fijas. Solo se ingresan los números.
- * Valida que el día, mes y año tengan sentido.
- */
+
 @Composable
 /**
  * Campo de fecha con formato DD/MM/AAAA.

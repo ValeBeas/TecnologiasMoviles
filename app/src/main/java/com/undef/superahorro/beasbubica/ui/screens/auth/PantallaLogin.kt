@@ -17,10 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
 import com.undef.superahorro.viewmodel.ViewModelAuth
 
-/**
- * Pantalla de inicio de sesión.
- * Login real contra Supabase Auth.
- */
+
 @Composable
 /**
  * Pantalla de inicio de sesión contra Supabase Auth.

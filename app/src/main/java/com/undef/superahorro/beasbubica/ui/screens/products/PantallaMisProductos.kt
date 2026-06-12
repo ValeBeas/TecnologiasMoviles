@@ -25,12 +25,10 @@ import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
-// Catálogo personal del usuario cargado desde Supabase.
-// Permite agregar nuevos productos y eliminar existentes.
 @Composable
 /**
  * Catálogo personal del usuario cargado desde Supabase.
- * Permite agregar productos con el botón + y eliminarlos individualmente.
+ * Permite agregar productos con el botón y eliminarlos individualmente.
  */
 fun PantallaMisProductos(navController: NavController, alVolverAtras: () -> Unit) {
     val contexto    = LocalContext.current

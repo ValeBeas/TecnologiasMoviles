@@ -25,8 +25,6 @@ import com.undef.superahorro.ui.theme.SurfaceWhite
 import com.undef.superahorro.viewmodel.ViewModelAuth
 import kotlinx.coroutines.launch
 
-// Perfil del usuario con nombre y apellido editables.
-// Al guardar, actualiza Supabase y DataStore.
 @Composable
 /**
  * Perfil del usuario con nombre y apellido editables.

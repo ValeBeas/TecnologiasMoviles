@@ -4,7 +4,6 @@ import androidx.room.*
 import com.undef.superahorro.data.local.db.entity.EntidadProducto
 import kotlinx.coroutines.flow.Flow
 
-// Lo mismo que DaoCompra pero para la tabla de productos.
 @Dao
 /**
  * Operaciones sobre la tabla 'productos' en Room.

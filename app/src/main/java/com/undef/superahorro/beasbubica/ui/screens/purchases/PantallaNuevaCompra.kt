@@ -39,9 +39,7 @@ import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
-// Formulario para registrar una nueva compra.
-// Todo el estado vive en el ViewModel para persistir al navegar a NuevoProducto y volver.
-// La cámara pide el permiso en runtime antes de abrirse para evitar el crash.
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 /**

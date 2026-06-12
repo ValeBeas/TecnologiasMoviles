@@ -3,7 +3,6 @@ package com.undef.superahorro.data.network
 import com.undef.superahorro.data.network.dto.DtoDolar
 import retrofit2.http.GET
 
-// Endpoints de la API del dólar (bluelytics.com.ar)
 /**
  * Endpoint de la API del dólar blue (bluelytics.com.ar).
  * Devuelve la cotización actual del dólar oficial y blue.

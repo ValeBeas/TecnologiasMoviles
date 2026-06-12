@@ -30,9 +30,7 @@ import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
-// Pantalla para editar una compra existente.
-// Precarga supermercado, fecha, hora y productos. Guarda en Room + Supabase al confirmar.
-// Reutiliza ViewModelNuevaCompra para manejar los productos editables.
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 /**

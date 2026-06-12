@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
-// Guarda la sesión del usuario y las preferencias con DataStore.
 /**
  * Guarda la sesión y las preferencias del usuario con DataStore.
  * Tokens de sesión, moneda activa y modo oscuro persisten entre cierres de la app.

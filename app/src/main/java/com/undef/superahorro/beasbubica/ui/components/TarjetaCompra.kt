@@ -18,7 +18,7 @@ import com.undef.superahorro.domain.model.Compra
 import com.undef.superahorro.ui.theme.*
 import com.undef.superahorro.viewmodel.ViewModelMoneda
 
-// Devuelve el color que le corresponde a cada supermercado.
+
 /**
  * Devuelve el color de la franja lateral según el supermercado.
  * Se usa en las tarjetas del historial y en las estadísticas.

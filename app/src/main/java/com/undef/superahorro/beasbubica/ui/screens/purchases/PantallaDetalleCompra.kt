@@ -28,8 +28,7 @@ import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
-// Detalle completo de una compra con botones de editar, borrar y compartir.
-// Todos los precios respetan la moneda activa del ViewModelMoneda.
+
 @Composable
 /**
  * Detalle completo de una compra: datos, foto del ticket y productos.

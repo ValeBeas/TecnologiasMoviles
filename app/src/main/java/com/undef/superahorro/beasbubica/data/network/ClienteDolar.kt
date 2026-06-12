@@ -6,7 +6,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-// Configura la conexión HTTP de la app con Retrofit para la API del dólar.
 /**
  * Cliente Retrofit para la API del dólar (bluelytics.com.ar).
  * Se llama una vez al iniciar la app para obtener el tipo de cambio.

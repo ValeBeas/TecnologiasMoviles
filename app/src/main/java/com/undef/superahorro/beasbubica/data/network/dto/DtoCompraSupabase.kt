@@ -4,10 +4,6 @@ import com.undef.superahorro.domain.model.Compra
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * DTO que mapea la tabla 'compras' de Supabase.
- * Los nombres de campos coinciden exactamente con las columnas de la tabla.
- */
 @Serializable
 /**
  * Mapea una fila de la tabla 'compras' de Supabase.

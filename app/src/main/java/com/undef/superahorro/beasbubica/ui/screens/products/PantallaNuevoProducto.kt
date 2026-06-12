@@ -28,8 +28,6 @@ import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.util.Locale
 
-// Pantalla para agregar un producto a la compra. Solo accesible desde NuevaCompra.
-// Tab 1: formulario manual. Tab 2: catálogo real del usuario desde Supabase.
 @Composable
 /**
  * Pantalla para agregar un producto a la compra en curso.

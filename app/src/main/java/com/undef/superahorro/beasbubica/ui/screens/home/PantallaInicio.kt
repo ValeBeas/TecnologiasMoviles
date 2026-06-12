@@ -28,11 +28,6 @@ import com.undef.superahorro.ui.theme.*
 import com.undef.superahorro.viewmodel.ViewModelCompras
 import com.undef.superahorro.viewmodel.ViewModelMoneda
 
-/**
- * Pantalla principal después del login.
- * Muestra un resumen de cuánto gastaste este mes, accesos rápidos
- * a las secciones y las últimas 3 compras que cargaste.
- */
 @Composable
 /**
  * Dashboard principal después del login.

@@ -9,11 +9,10 @@ import com.undef.superahorro.data.local.db.dao.DaoProducto
 import com.undef.superahorro.data.local.db.entity.EntidadCompra
 import com.undef.superahorro.data.local.db.entity.EntidadProducto
 
-// Base de datos local de la app usando Room.
-// versión 2: se agregaron idSupabase, idCompraSupabase y sincronizado
+
 /**
- * Base de datos local Room con las tablas de compras y productos.
- * Versión 2 — incluye campos idSupabase para sincronizar con Supabase.
+ * Base de datos local Room con las tablas de compras y productos
+ * Incluye campos idSupabase para sincronizar con Supabase
  */
 @Database(
     entities = [EntidadCompra::class, EntidadProducto::class],

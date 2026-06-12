@@ -13,11 +13,7 @@ import com.undef.superahorro.ui.components.BarraSuperior
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
 import com.undef.superahorro.viewmodel.ViewModelMoneda
 
-/**
- * Pantalla de ajustes de la app.
- * El modo oscuro funciona de verdad: al activarlo cambia el tema de toda la app.
- * El selector ARS/USD conecta con ViewModelMoneda para convertir precios en toda la app.
- */
+
 @Composable
 /**
  * Ajustes de la app: modo oscuro y moneda (ARS/USD).
