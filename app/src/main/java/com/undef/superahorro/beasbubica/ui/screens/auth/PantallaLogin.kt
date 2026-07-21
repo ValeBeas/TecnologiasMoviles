@@ -1,5 +1,6 @@
 package com.undef.superahorro.ui.screens.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -10,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
@@ -30,17 +32,67 @@ fun PantallaLogin(
     alIniciarSesion: () -> Unit,
     alIrARegistro: () -> Unit
 ) {
+    val contexto = LocalContext.current
     var email by remember { mutableStateOf("") }
     var contrasena by remember { mutableStateOf("") }
     var verContrasena by remember { mutableStateOf(false) }
     var mensajeError by remember { mutableStateOf("") }
 
+    // Estado del diálogo de recuperación de contraseña
+    var mostrarDialogoReset by remember { mutableStateOf(false) }
+    var emailReset by remember { mutableStateOf("") }
+    var errorReset by remember { mutableStateOf("") }
+
     val estadoAuth by viewModelAuth.estadoUsuario.collectAsState()
     val cargando = estadoAuth.cargando
 
     // stringResource solo se puede llamar dentro de un @Composable, no dentro de onClick,
-    // por eso el texto del error se lee acá y se usa más abajo en el botón.
+    // por eso los textos que se usan en callbacks se leen acá.
     val textoCamposIncompletos = stringResource(R.string.error_empty_fields)
+    val textoResetEnviado = stringResource(R.string.reset_password_sent)
+
+    // Diálogo de recuperación de contraseña (envía un email vía Supabase)
+    if (mostrarDialogoReset) {
+        AlertDialog(
+            onDismissRequest = { mostrarDialogoReset = false },
+            icon  = { Icon(Icons.Outlined.LockReset, null) },
+            title = { Text(stringResource(R.string.reset_password_title)) },
+            text  = {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(stringResource(R.string.reset_password_instructions), style = MaterialTheme.typography.bodyMedium)
+                    OutlinedTextField(
+                        value = emailReset,
+                        onValueChange = { emailReset = it; errorReset = "" },
+                        label = { Text(stringResource(R.string.login_email)) },
+                        leadingIcon = { Icon(Icons.Outlined.Email, null) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = MaterialTheme.shapes.medium
+                    )
+                    if (errorReset.isNotBlank()) {
+                        Text(errorReset, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    if (emailReset.isBlank()) { errorReset = textoCamposIncompletos; return@TextButton }
+                    viewModelAuth.recuperarContrasena(
+                        email = emailReset.trim(),
+                        onExito = {
+                            mostrarDialogoReset = false
+                            Toast.makeText(contexto, textoResetEnviado, Toast.LENGTH_LONG).show()
+                        },
+                        onError = { errorReset = it }
+                    )
+                }) { Text(stringResource(R.string.reset_password_send)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { mostrarDialogoReset = false }) { Text(stringResource(R.string.action_cancel)) }
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -106,6 +158,13 @@ fun PantallaLogin(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.medium
         )
+
+        // Link para recuperar contraseña — abre el diálogo con el email precargado
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            TextButton(onClick = { emailReset = email; errorReset = ""; mostrarDialogoReset = true }) {
+                Text(stringResource(R.string.login_forgot_password))
+            }
+        }
 
         // Mensaje de error
         if (mensajeError.isNotBlank()) {

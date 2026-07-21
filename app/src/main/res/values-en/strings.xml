@@ -25,6 +25,10 @@
     <string name="login_email">Email address</string>
     <string name="login_password">Password</string>
     <string name="login_forgot_password">Forgot your password?</string>
+    <string name="reset_password_title">Reset password</string>
+    <string name="reset_password_instructions">Enter your email and we\'ll send you a link to reset your password.</string>
+    <string name="reset_password_send">Send email</string>
+    <string name="reset_password_sent">We sent you an email to reset your password</string>
     <string name="login_no_account">Don\'t have an account?</string>
     <string name="login_register">Sign up</string>
     <string name="register_title">Create account</string>
@@ -37,6 +41,8 @@
     <string name="register_password_mismatch">Passwords don\'t match</string>
     <string name="register_already_account">Already have an account?</string>
     <string name="purchase_new">New Purchase</string>
+    <string name="purchase_edit">Edit Purchase</string>
+    <string name="purchase_no_products">No products</string>
     <string name="purchase_list">My Purchases</string>
     <string name="purchase_detail">Purchase detail</string>
     <string name="purchase_supermarket">Supermarket</string>
@@ -54,6 +60,8 @@
     <string name="purchase_share_chooser">Share purchase</string>
     <string name="purchase_empty_title">No purchases yet</string>
     <string name="purchase_empty_subtitle">Register your first purchase by tapping the + button</string>
+    <string name="search_purchases_hint">Search by store or date</string>
+    <string name="search_no_results">No purchases found</string>
     <string name="purchase_delete_title">Delete purchase</string>
     <string name="purchase_delete_confirm">Delete the purchase at %1$s from %2$s? This can\'t be undone.</string>
     <string name="purchase_total_paid">Total paid</string>

@@ -273,6 +273,42 @@ class RepositorioComprasSupabase(private val contexto: Context) : RepositorioCom
     }
 
     /**
+     * Edita una compra y REEMPLAZA sus productos.
+     * 1. Actualiza la cabecera en Room y Supabase (igual que editarCompra).
+     * 2. Borra los productos viejos (Supabase + Room) y re-inserta la lista actual.
+     * De esta forma los cambios de productos (cantidad, alta y baja) quedan persistidos.
+     */
+    suspend fun editarCompraConProductos(
+        compra: Compra,
+        productos: List<ProductoEnCompra>
+    ): Result<Unit> = runCatching {
+        // 1. Cabecera: Room primero (UI reacciona al toque), luego Supabase
+        daoCompra.actualizar(compra.aEntidad())
+        if (compra.idSupabase.isNotBlank()) {
+            supabase.postgrest.from("compras")
+                .update(buildJsonObject {
+                    put("fecha",        compra.fecha)
+                    put("hora",         compra.hora)
+                    put("supermercado", compra.supermercado)
+                    put("total",        compra.total)
+                }) { filter { eq("id", compra.idSupabase) } }
+        }
+
+        // 2. Reemplazar productos: borrar los viejos en Supabase...
+        if (compra.idSupabase.isNotBlank()) {
+            runCatching {
+                supabase.postgrest.from("productos")
+                    .delete { filter { eq("compra_id", compra.idSupabase) } }
+            }
+        }
+        // ...y en Room (por el id local de la compra)
+        daoProducto.eliminarPorCompra(compra.id)
+
+        // Re-insertar la lista actual (Supabase + Room, reutiliza el método existente)
+        insertarProductos(compra.id, compra.idSupabase, productos)
+    }
+
+    /**
      * Borra una compra.
      * Borra en Room y en Supabase (cascade elimina sus productos en Supabase).
      * También borra los productos de Room manualmente.

@@ -32,6 +32,10 @@
     <string name="login_email">Correo electrónico</string>
     <string name="login_password">Contraseña</string>
     <string name="login_forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="reset_password_title">Recuperar contraseña</string>
+    <string name="reset_password_instructions">Ingresá tu email y te enviaremos un enlace para restablecer tu contraseña.</string>
+    <string name="reset_password_send">Enviar email</string>
+    <string name="reset_password_sent">Te enviamos un email para recuperar tu contraseña</string>
     <string name="login_no_account">¿No tenés cuenta?</string>
     <string name="login_register">Registrate</string>
     <string name="register_title">Crear cuenta</string>
@@ -46,6 +50,8 @@
 
     <!-- Compras -->
     <string name="purchase_new">Nueva Compra</string>
+    <string name="purchase_edit">Editar Compra</string>
+    <string name="purchase_no_products">Sin productos</string>
     <string name="purchase_list">Mis Compras</string>
     <string name="purchase_detail">Detalle de compra</string>
     <string name="purchase_supermarket">Supermercado</string>
@@ -63,6 +69,8 @@
     <string name="purchase_share_chooser">Compartir compra</string>
     <string name="purchase_empty_title">Sin compras aún</string>
     <string name="purchase_empty_subtitle">Registrá tu primera compra tocando el botón +</string>
+    <string name="search_purchases_hint">Buscar por supermercado o fecha</string>
+    <string name="search_no_results">No se encontraron compras</string>
     <string name="purchase_delete_title">Borrar compra</string>
     <string name="purchase_delete_confirm">¿Seguro que querés borrar la compra en %1$s del %2$s? No se puede deshacer.</string>
     <string name="purchase_total_paid">Total abonado</string>

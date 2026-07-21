@@ -97,6 +97,15 @@ class ViewModelAuth(private val contexto: Context) : ViewModel() {
         }
     }
 
+    // Envía el email de recuperación de contraseña
+    fun recuperarContrasena(email: String, onExito: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            repositorio.recuperarContrasena(email)
+                .onSuccess { onExito() }
+                .onFailure { e -> onError(mensajeDeError(e.message)) }
+        }
+    }
+
     // Cierra sesión y limpia todo
     fun cerrarSesion(onCompleto: () -> Unit) {
         viewModelScope.launch {

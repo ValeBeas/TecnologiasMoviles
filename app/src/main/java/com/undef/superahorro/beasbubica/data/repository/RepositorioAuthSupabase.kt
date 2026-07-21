@@ -127,6 +127,11 @@ class RepositorioAuthSupabase(private val contexto: Context) {
         }
     }
 
+    // Envía un email de recuperación de contraseña a través de Supabase Auth
+    suspend fun recuperarContrasena(email: String): Result<Unit> = runCatching {
+        supabase.auth.resetPasswordForEmail(email)
+    }
+
     // Cierra sesión en Supabase y limpia DataStore
     suspend fun cerrarSesion() {
         runCatching { supabase.auth.signOut() }
