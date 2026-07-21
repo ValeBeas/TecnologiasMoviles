@@ -7,12 +7,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.platform.LocalContext
+import com.undef.superahorro.R
 import com.undef.superahorro.domain.model.Compra
 import com.undef.superahorro.ui.components.*
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
@@ -38,21 +41,18 @@ fun PantallaHistorial(
     val compras   = estado.datos ?: emptyList()
     val formateador = NumberFormat.getNumberInstance(Locale("es", "AR"))
 
+    // Recursos leídos en contexto @Composable (no se pueden llamar dentro de los lambdas de abajo)
+    val nombresMeses = stringArrayResource(R.array.month_names)
+    val textoSinFecha = stringResource(R.string.history_no_date)
+
     // Agrupa las compras por "MM/AAAA" — ya vienen ordenadas por fecha descendente del repositorio
     val agrupadasPorMes: Map<String, List<Compra>> = compras.groupBy { compra ->
         val partes = compra.fecha.split("/")
-        if (partes.size >= 3) "${partes[1]}/${partes[2]}" else "Sin fecha"
+        if (partes.size >= 3) "${partes[1]}/${partes[2]}" else textoSinFecha
     }
 
-    // Nombres de meses en español para mostrar en los encabezados
-    val nombresMeses = mapOf(
-        "01" to "Enero", "02" to "Febrero", "03" to "Marzo",    "04" to "Abril",
-        "05" to "Mayo",  "06" to "Junio",   "07" to "Julio",    "08" to "Agosto",
-        "09" to "Septiembre", "10" to "Octubre", "11" to "Noviembre", "12" to "Diciembre"
-    )
-
     Scaffold(
-        topBar = { BarraSuperior(titulo = "Historial", mostrarVolver = true, alVolverAtras = alVolverAtras) },
+        topBar = { BarraSuperior(titulo = stringResource(R.string.history_title), mostrarVolver = true, alVolverAtras = alVolverAtras) },
         bottomBar = { BarraNavegacionInferior(navController) }
     ) { padding ->
         if (estado.cargando) { IndicadorCarga(modifier = Modifier.padding(padding)); return@Scaffold }
@@ -60,8 +60,10 @@ fun PantallaHistorial(
         LazyColumn(modifier = Modifier.fillMaxSize().padding(padding), contentPadding = PaddingValues(bottom = 80.dp)) {
             // Ordena los grupos de mes de más reciente a más antiguo
             agrupadasPorMes.entries.sortedByDescending { it.key }.forEach { (claveMes, comprasDelMes) ->
-                val partes    = claveMes.split("/")
-                val nombreMes = if (partes.size >= 2) "${nombresMeses[partes[0]] ?: partes[0]} ${partes[1]}" else claveMes
+                val partes     = claveMes.split("/")
+                val indiceMes  = partes.getOrNull(0)?.toIntOrNull()?.minus(1)
+                val nombreMes  = if (partes.size >= 2 && indiceMes != null && indiceMes in 0..11)
+                    "${nombresMeses[indiceMes]} ${partes[1]}" else claveMes
                 val totalMes  = comprasDelMes.sumOf { it.total }
 
                 // --- Encabezado de mes con total ---

@@ -11,12 +11,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.undef.superahorro.R
 import com.undef.superahorro.data.repository.RepositorioPerfilSupabase
 import com.undef.superahorro.domain.model.Producto
 import com.undef.superahorro.ui.components.*
@@ -50,7 +52,7 @@ fun PantallaMisProductos(navController: NavController, alVolverAtras: () -> Unit
                 productos = lista
             }
             .onFailure { e ->
-                mensajeError = e.message ?: "Error al cargar"
+                mensajeError = e.message ?: contexto.getString(R.string.error_loading)
                 productos = emptyList()
             }
         cargando = false
@@ -72,7 +74,7 @@ fun PantallaMisProductos(navController: NavController, alVolverAtras: () -> Unit
                             productos = productos + nuevo
                         }
                         .onFailure { e ->
-                            mensajeError = "Error al guardar: ${e.message}"
+                            mensajeError = contexto.getString(R.string.profile_save_error, e.message ?: "")
                         }
                     mostrarDialogo = false
                 }
@@ -84,7 +86,7 @@ fun PantallaMisProductos(navController: NavController, alVolverAtras: () -> Unit
     Scaffold(
         topBar = {
             BarraSuperior(
-                titulo = "Mis Productos",
+                titulo = stringResource(R.string.products_my_title),
                 mostrarVolver = true,
                 alVolverAtras = alVolverAtras
             )
@@ -109,8 +111,8 @@ fun PantallaMisProductos(navController: NavController, alVolverAtras: () -> Unit
             productos.isEmpty() -> Box(modifier = Modifier.fillMaxSize().padding(padding)) {
                 EstadoVacio(
                     icono = Icons.Outlined.Inventory2,
-                    titulo = "Sin productos guardados",
-                    subtitulo = "Tocá el botón + para agregar tus productos frecuentes"
+                    titulo = stringResource(R.string.products_empty_title),
+                    subtitulo = stringResource(R.string.products_empty_subtitle)
                 )
             }
             else -> LazyColumn(
@@ -119,7 +121,7 @@ fun PantallaMisProductos(navController: NavController, alVolverAtras: () -> Unit
             ) {
                 item {
                     Text(
-                        "Tus productos frecuentes aparecen al agregar una compra.",
+                        stringResource(R.string.products_frequent_hint),
                         style    = MaterialTheme.typography.bodySmall,
                         color    = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
@@ -130,8 +132,8 @@ fun PantallaMisProductos(navController: NavController, alVolverAtras: () -> Unit
                         headlineContent = { Text(prod.nombre, fontWeight = FontWeight.SemiBold) },
                         supportingContent = {
                             Column {
-                                Text("$ ${formateador.format(prod.precio)}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
-                                if (prod.codigo.isNotBlank()) Text("Cód: ${prod.codigo}", style = MaterialTheme.typography.labelSmall)
+                                Text(stringResource(R.string.amount_format, formateador.format(prod.precio)), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                                if (prod.codigo.isNotBlank()) Text(stringResource(R.string.product_code_prefix, prod.codigo), style = MaterialTheme.typography.labelSmall)
                             }
                         },
                         trailingContent = {
@@ -164,18 +166,18 @@ private fun DialogoAgregarAlCatalogo(
 
     AlertDialog(
         onDismissRequest = onCancelar,
-        title   = { Text("Agregar al catálogo") },
+        title   = { Text(stringResource(R.string.catalog_add_title)) },
         text    = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedTextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre *") }, singleLine = true, modifier = Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium)
-                OutlinedTextField(value = precio, onValueChange = { precio = it }, label = { Text("Precio *") }, prefix = { Text("$ ") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), singleLine = true, modifier = Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium)
-                OutlinedTextField(value = codigo, onValueChange = { codigo = it }, label = { Text("Código de barras (opcional)") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), singleLine = true, modifier = Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium)
+                OutlinedTextField(value = nombre, onValueChange = { nombre = it }, label = { Text(stringResource(R.string.register_name) + " *") }, singleLine = true, modifier = Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium)
+                OutlinedTextField(value = precio, onValueChange = { precio = it }, label = { Text(stringResource(R.string.product_price_simple) + " *") }, prefix = { Text(stringResource(R.string.currency_prefix)) }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), singleLine = true, modifier = Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium)
+                OutlinedTextField(value = codigo, onValueChange = { codigo = it }, label = { Text(stringResource(R.string.product_code_optional)) }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), singleLine = true, modifier = Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium)
             }
         },
         confirmButton = {
-            Button(onClick = { onAgregar(nombre.trim(), precioOk, codigo.trim()) }, enabled = nombre.isNotBlank() && precioOk > 0) { Text("Agregar") }
+            Button(onClick = { onAgregar(nombre.trim(), precioOk, codigo.trim()) }, enabled = nombre.isNotBlank() && precioOk > 0) { Text(stringResource(R.string.action_add)) }
         },
-        dismissButton = { TextButton(onClick = onCancelar) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = onCancelar) { Text(stringResource(R.string.action_cancel)) } }
     )
 }
 

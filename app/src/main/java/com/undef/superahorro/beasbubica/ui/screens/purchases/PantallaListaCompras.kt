@@ -8,11 +8,13 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.platform.LocalContext
+import com.undef.superahorro.R
 import com.undef.superahorro.ui.components.*
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
 import com.undef.superahorro.viewmodel.ViewModelMoneda
@@ -38,10 +40,10 @@ fun PantallaListaCompras(
     Scaffold(
         topBar = {
             BarraSuperior(
-                titulo = "Mis Compras",
+                titulo = stringResource(R.string.purchase_list),
                 mostrarVolver = true,
                 alVolverAtras = alVolverAtras,
-                acciones = { IconButton(onClick = {}) { Icon(Icons.Outlined.Search, null, tint = MaterialTheme.colorScheme.onPrimary) } }
+                acciones = { IconButton(onClick = {}) { Icon(Icons.Outlined.Search, contentDescription = stringResource(R.string.action_search), tint = MaterialTheme.colorScheme.onPrimary) } }
             )
         },
         floatingActionButton = {
@@ -55,9 +57,9 @@ fun PantallaListaCompras(
             estado.cargando -> IndicadorCarga(modifier = Modifier.padding(padding))
             estado.datos.isNullOrEmpty() -> EstadoVacio(
                 icono = Icons.Outlined.ShoppingBag,
-                titulo = "Sin compras aún",
-                subtitulo = "Registrá tu primera compra tocando el botón +",
-                etiquetaAccion = "Nueva compra",
+                titulo = stringResource(R.string.purchase_empty_title),
+                subtitulo = stringResource(R.string.purchase_empty_subtitle),
+                etiquetaAccion = stringResource(R.string.home_new_purchase),
                 alAccionar = alAgregarCompra
             )
             else -> LazyColumn(contentPadding = PaddingValues(vertical = 8.dp), modifier = Modifier.padding(padding)) {

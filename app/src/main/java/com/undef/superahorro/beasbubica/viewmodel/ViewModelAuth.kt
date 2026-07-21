@@ -3,6 +3,7 @@ package com.undef.superahorro.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.undef.superahorro.R
 import com.undef.superahorro.data.repository.RepositorioAuthSupabase
 import com.undef.superahorro.data.repository.RepositorioComprasSupabase
 import com.undef.superahorro.domain.model.Usuario
@@ -106,14 +107,15 @@ class ViewModelAuth(private val contexto: Context) : ViewModel() {
         }
     }
 
-    // Convierte los errores técnicos de Supabase en mensajes legibles
+    // Convierte los errores técnicos de Supabase en mensajes legibles.
+    // Usa contexto.getString(...) porque el ViewModel no es un @Composable.
     private fun mensajeDeError(mensaje: String?): String = when {
-        mensaje == null -> "Error desconocido"
-        "Invalid login credentials" in mensaje -> "Email o contraseña incorrectos"
-        "Email not confirmed" in mensaje -> "Confirmá tu email antes de iniciar sesión"
-        "User already registered" in mensaje -> "Ya existe una cuenta con ese email"
-        "Password should be" in mensaje -> "La contraseña debe tener al menos 6 caracteres"
-        "Unable to validate" in mensaje -> "Sin conexión a internet"
-        else -> "Error: $mensaje"
+        mensaje == null -> contexto.getString(R.string.error_unknown)
+        "Invalid login credentials" in mensaje -> contexto.getString(R.string.auth_error_invalid_credentials)
+        "Email not confirmed" in mensaje -> contexto.getString(R.string.auth_error_email_not_confirmed)
+        "User already registered" in mensaje -> contexto.getString(R.string.auth_error_user_exists)
+        "Password should be" in mensaje -> contexto.getString(R.string.auth_error_weak_password)
+        "Unable to validate" in mensaje -> contexto.getString(R.string.error_network)
+        else -> contexto.getString(R.string.error_with_detail, mensaje)
     }
 }

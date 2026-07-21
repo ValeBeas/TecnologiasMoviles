@@ -11,12 +11,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.platform.LocalContext
+import com.undef.superahorro.R
 import com.undef.superahorro.ui.components.*
 import com.undef.superahorro.ui.theme.*
 import com.undef.superahorro.viewmodel.PeriodoEstadisticas
@@ -43,7 +45,7 @@ fun PantallaEstadisticas(
     val formateador = NumberFormat.getNumberInstance(Locale("es", "AR"))
 
     Scaffold(
-        topBar = { BarraSuperior(titulo = "Estadísticas", mostrarVolver = true, alVolverAtras = alVolverAtras) },
+        topBar = { BarraSuperior(titulo = stringResource(R.string.stats_title), mostrarVolver = true, alVolverAtras = alVolverAtras) },
         bottomBar = { BarraNavegacionInferior(navController) }
     ) { padding ->
         if (estadoStats.cargando || stats == null) {
@@ -60,7 +62,7 @@ fun PantallaEstadisticas(
                         FilterChip(
                             selected = periodo == p,
                             onClick  = { viewModel.cambiarPeriodo(p) },
-                            label    = { Text(p.etiqueta) }
+                            label    = { Text(stringResource(p.etiquetaRes)) }
                         )
                     }
                 }
@@ -70,7 +72,7 @@ fun PantallaEstadisticas(
             if (stats.cantidadCompras == 0) {
                 item {
                     Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
-                        Text("No hay compras en este período", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.stats_no_data_period), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
                 return@LazyColumn
@@ -79,26 +81,26 @@ fun PantallaEstadisticas(
             // --- Tarjetas de métricas ---
             item {
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    TarjetaEstadistica(Icons.Outlined.AttachMoney, "Total gastado",   viewModelMoneda.convertir(stats.totalGastado),      Modifier.weight(1f))
-                    TarjetaEstadistica(Icons.Outlined.ShoppingCart, "Compras",        "${stats.cantidadCompras}",                         Modifier.weight(1f))
+                    TarjetaEstadistica(Icons.Outlined.AttachMoney, stringResource(R.string.home_total_spent),      viewModelMoneda.convertir(stats.totalGastado),      Modifier.weight(1f))
+                    TarjetaEstadistica(Icons.Outlined.ShoppingCart, stringResource(R.string.stats_total_purchases), "${stats.cantidadCompras}",                         Modifier.weight(1f))
                 }
                 Spacer(Modifier.height(12.dp))
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    TarjetaEstadistica(Icons.Outlined.TrendingDown, "Promedio",       viewModelMoneda.convertir(stats.promedioPorCompra), Modifier.weight(1f))
-                    TarjetaEstadistica(Icons.Outlined.Store,        "Favorito",        stats.supermercadoFavorito.take(9),                Modifier.weight(1f))
+                    TarjetaEstadistica(Icons.Outlined.TrendingDown, stringResource(R.string.stats_avg_per_purchase), viewModelMoneda.convertir(stats.promedioPorCompra), Modifier.weight(1f))
+                    TarjetaEstadistica(Icons.Outlined.Store,        stringResource(R.string.stats_favorite_market),  stats.supermercadoFavorito.take(9),                Modifier.weight(1f))
                 }
             }
 
             // --- Gráfico de barras por día ---
             item {
                 Spacer(Modifier.height(20.dp))
-                Text("Gasto por día", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp))
+                Text(stringResource(R.string.stats_daily_chart), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp))
                 Spacer(Modifier.height(12.dp))
                 Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), shape = RoundedCornerShape(16.dp)) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         val maxVal = stats.gastosPorDia.maxOfOrNull { it.second } ?: 1.0
                         if (stats.gastosPorDia.isEmpty()) {
-                            Text("Sin datos", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(R.string.stats_no_data), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         } else {
                             stats.gastosPorDia.take(7).forEach { (dia, monto) ->
                                 Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -122,7 +124,7 @@ fun PantallaEstadisticas(
             // --- Distribución por supermercado ---
             item {
                 Spacer(Modifier.height(20.dp))
-                Text("Por supermercado", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp))
+                Text(stringResource(R.string.stats_by_supermarket), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 16.dp))
                 Spacer(Modifier.height(12.dp))
                 Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), shape = RoundedCornerShape(16.dp)) {
                     Column(modifier = Modifier.padding(16.dp)) {
@@ -136,7 +138,7 @@ fun PantallaEstadisticas(
                                     Spacer(Modifier.width(8.dp))
                                     Text(super_, style = MaterialTheme.typography.bodyMedium)
                                 }
-                                Text("$pct% · ${viewModelMoneda.convertir(monto)}", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = color)
+                                Text(stringResource(R.string.stats_pct_amount, pct, viewModelMoneda.convertir(monto)), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = color)
                             }
                         }
                     }

@@ -12,8 +12,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.undef.superahorro.R
 import com.undef.superahorro.domain.model.Compra
 import com.undef.superahorro.ui.theme.*
 import com.undef.superahorro.viewmodel.ViewModelMoneda
@@ -82,8 +84,8 @@ fun TarjetaCompra(
                     Spacer(Modifier.width(12.dp))
                     Column {
                         Text(compra.supermercado, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                        Text("${compra.fecha} · ${compra.hora}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text("${compra.cantidadProductos} productos", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.date_time_format, compra.fecha, compra.hora), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(stringResource(R.string.home_products_count, compra.cantidadProductos), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
                 Text(

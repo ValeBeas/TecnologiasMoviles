@@ -10,10 +10,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.undef.superahorro.R
 import com.undef.superahorro.ui.components.BarraSuperior
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
 import com.undef.superahorro.viewmodel.ViewModelAuth
@@ -46,7 +48,7 @@ fun PantallaRegistro(
         contrasenaValida && contrasenaCoincide
 
     Scaffold(topBar = {
-        BarraSuperior("Crear cuenta", mostrarVolver = true, alVolverAtras = alVolverAlLogin)
+        BarraSuperior(stringResource(R.string.register_title), mostrarVolver = true, alVolverAtras = alVolverAlLogin)
     }) { padding ->
         Column(
             modifier = Modifier
@@ -59,7 +61,7 @@ fun PantallaRegistro(
         ) {
             Spacer(Modifier.height(8.dp))
             Text(
-                "Completá tus datos",
+                stringResource(R.string.register_subtitle),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
@@ -67,7 +69,7 @@ fun PantallaRegistro(
                 OutlinedTextField(
                     value = nombre,
                     onValueChange = { nombre = it; mensajeError = "" },
-                    label = { Text("Nombre *") },
+                    label = { Text(stringResource(R.string.register_name) + " *") },
                     singleLine = true,
                     modifier = Modifier.weight(1f),
                     shape = MaterialTheme.shapes.medium
@@ -75,7 +77,7 @@ fun PantallaRegistro(
                 OutlinedTextField(
                     value = apellido,
                     onValueChange = { apellido = it },
-                    label = { Text("Apellido") },
+                    label = { Text(stringResource(R.string.register_last_name)) },
                     singleLine = true,
                     modifier = Modifier.weight(1f),
                     shape = MaterialTheme.shapes.medium
@@ -84,7 +86,7 @@ fun PantallaRegistro(
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it; mensajeError = "" },
-                label = { Text("Correo electrónico *") },
+                label = { Text(stringResource(R.string.login_email) + " *") },
                 leadingIcon = { Icon(Icons.Outlined.Email, null) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 singleLine = true,
@@ -94,7 +96,7 @@ fun PantallaRegistro(
             OutlinedTextField(
                 value = contrasena,
                 onValueChange = { contrasena = it; mensajeError = "" },
-                label = { Text("Contraseña * (mínimo 6 caracteres)") },
+                label = { Text(stringResource(R.string.login_password) + " * " + stringResource(R.string.register_password_hint)) },
                 leadingIcon = { Icon(Icons.Outlined.Lock, null) },
                 trailingIcon = {
                     IconButton(onClick = { verContrasena = !verContrasena }) {
@@ -109,7 +111,7 @@ fun PantallaRegistro(
                 isError = contrasena.isNotEmpty() && !contrasenaValida,
                 supportingText = {
                     if (contrasena.isNotEmpty() && !contrasenaValida)
-                        Text("Mínimo 6 caracteres")
+                        Text(stringResource(R.string.register_password_min))
                 },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -118,14 +120,14 @@ fun PantallaRegistro(
             OutlinedTextField(
                 value = confirmar,
                 onValueChange = { confirmar = it },
-                label = { Text("Confirmar contraseña *") },
+                label = { Text(stringResource(R.string.register_confirm_password) + " *") },
                 leadingIcon = { Icon(Icons.Outlined.Lock, null) },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 isError = confirmar.isNotEmpty() && !contrasenaCoincide,
                 supportingText = {
                     if (confirmar.isNotEmpty() && !contrasenaCoincide)
-                        Text("Las contraseñas no coinciden")
+                        Text(stringResource(R.string.register_password_mismatch))
                 },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -164,12 +166,12 @@ fun PantallaRegistro(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text("Crear cuenta", style = MaterialTheme.typography.labelLarge)
+                    Text(stringResource(R.string.register_title), style = MaterialTheme.typography.labelLarge)
                 }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("¿Ya tenés cuenta?")
-                TextButton(onClick = alVolverAlLogin) { Text("Iniciar sesión") }
+                Text(stringResource(R.string.register_already_account))
+                TextButton(onClick = alVolverAlLogin) { Text(stringResource(R.string.login_title)) }
             }
         }
     }

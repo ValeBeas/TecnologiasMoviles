@@ -10,10 +10,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.undef.superahorro.R
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
 import com.undef.superahorro.viewmodel.ViewModelAuth
 
@@ -36,6 +38,10 @@ fun PantallaLogin(
     val estadoAuth by viewModelAuth.estadoUsuario.collectAsState()
     val cargando = estadoAuth.cargando
 
+    // stringResource solo se puede llamar dentro de un @Composable, no dentro de onClick,
+    // por eso el texto del error se lee acá y se usa más abajo en el botón.
+    val textoCamposIncompletos = stringResource(R.string.error_empty_fields)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -52,13 +58,13 @@ fun PantallaLogin(
         )
         Spacer(Modifier.height(12.dp))
         Text(
-            "SUPER AHORRO",
+            stringResource(R.string.app_brand),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.ExtraBold,
             color = MaterialTheme.colorScheme.primary
         )
         Text(
-            "Bienvenido de nuevo",
+            stringResource(R.string.login_welcome_back),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -67,7 +73,7 @@ fun PantallaLogin(
         OutlinedTextField(
             value = email,
             onValueChange = { email = it; mensajeError = "" },
-            label = { Text("Correo electrónico") },
+            label = { Text(stringResource(R.string.login_email)) },
             leadingIcon = { Icon(Icons.Outlined.Email, null) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email,
@@ -81,7 +87,7 @@ fun PantallaLogin(
         OutlinedTextField(
             value = contrasena,
             onValueChange = { contrasena = it; mensajeError = "" },
-            label = { Text("Contraseña") },
+            label = { Text(stringResource(R.string.login_password)) },
             leadingIcon = { Icon(Icons.Outlined.Lock, null) },
             trailingIcon = {
                 IconButton(onClick = { verContrasena = !verContrasena }) {
@@ -116,7 +122,7 @@ fun PantallaLogin(
         Button(
             onClick = {
                 if (email.isBlank() || contrasena.isBlank()) {
-                    mensajeError = "Completá todos los campos"
+                    mensajeError = textoCamposIncompletos
                     return@Button
                 }
                 viewModelAuth.iniciarSesion(
@@ -137,15 +143,15 @@ fun PantallaLogin(
                     strokeWidth = 2.dp
                 )
             } else {
-                Text("Iniciar sesión", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.login_title), style = MaterialTheme.typography.labelLarge)
             }
         }
         Spacer(Modifier.height(24.dp))
         HorizontalDivider()
         Spacer(Modifier.height(24.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("¿No tenés cuenta?")
-            TextButton(onClick = alIrARegistro) { Text("Registrate") }
+            Text(stringResource(R.string.login_no_account))
+            TextButton(onClick = alIrARegistro) { Text(stringResource(R.string.login_register)) }
         }
     }
 }

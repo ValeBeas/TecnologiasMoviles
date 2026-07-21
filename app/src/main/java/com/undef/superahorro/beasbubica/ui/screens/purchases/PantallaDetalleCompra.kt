@@ -14,10 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.undef.superahorro.R
 import com.undef.superahorro.data.repository.RepositorioComprasSupabase
 import com.undef.superahorro.ui.components.BarraSuperior
 import com.undef.superahorro.ui.components.IndicadorCarga
@@ -63,8 +65,8 @@ fun PantallaDetalleCompra(
         AlertDialog(
             onDismissRequest = { mostrarDialogoBorrar = false },
             icon    = { Icon(Icons.Outlined.DeleteForever, null, tint = MaterialTheme.colorScheme.error) },
-            title   = { Text("Borrar compra") },
-            text    = { Text("¿Seguro que querés borrar la compra en ${compra.supermercado} del ${compra.fecha}? No se puede deshacer.") },
+            title   = { Text(stringResource(R.string.purchase_delete_title)) },
+            text    = { Text(stringResource(R.string.purchase_delete_confirm, compra.supermercado, compra.fecha)) },
             confirmButton = {
                 TextButton(onClick = {
                     scope.launch {
@@ -73,10 +75,10 @@ fun PantallaDetalleCompra(
                         mostrarDialogoBorrar = false
                         alVolverAtras()
                     }
-                }) { Text("Borrar", color = MaterialTheme.colorScheme.error) }
+                }) { Text(stringResource(R.string.action_erase), color = MaterialTheme.colorScheme.error) }
             },
             dismissButton = {
-                TextButton(onClick = { mostrarDialogoBorrar = false }) { Text("Cancelar") }
+                TextButton(onClick = { mostrarDialogoBorrar = false }) { Text(stringResource(R.string.action_cancel)) }
             }
         )
     }
@@ -84,27 +86,30 @@ fun PantallaDetalleCompra(
     Scaffold(
         topBar = {
             BarraSuperior(
-                titulo        = "Detalle de Compra",
+                titulo        = stringResource(R.string.purchase_detail),
                 mostrarVolver = true,
                 alVolverAtras = alVolverAtras,
                 acciones = {
                     // Botón editar
                     IconButton(onClick = { alEditarCompra(compraId) }) {
-                        Icon(Icons.Outlined.Edit, "Editar", tint = MaterialTheme.colorScheme.onPrimary)
+                        Icon(Icons.Outlined.Edit, stringResource(R.string.action_edit), tint = MaterialTheme.colorScheme.onPrimary)
                     }
                     // Botón borrar
                     IconButton(onClick = { mostrarDialogoBorrar = true }, enabled = !borrando) {
-                        Icon(Icons.Outlined.DeleteOutline, "Borrar", tint = MaterialTheme.colorScheme.onPrimary)
+                        Icon(Icons.Outlined.DeleteOutline, stringResource(R.string.action_erase), tint = MaterialTheme.colorScheme.onPrimary)
                     }
                     // Botón compartir
                     IconButton(onClick = {
                         compra?.let {
-                            val texto = "Compra en ${it.supermercado}\nFecha: ${it.fecha} ${it.hora}\nTotal: ${viewModelMoneda.convertir(it.total)}"
+                            val texto = contexto.getString(
+                                R.string.purchase_share_text,
+                                it.supermercado, it.fecha, it.hora, viewModelMoneda.convertir(it.total)
+                            )
                             val intent = Intent(Intent.ACTION_SEND).apply {
                                 type = "text/plain"
                                 putExtra(Intent.EXTRA_TEXT, texto)
                             }
-                            contexto.startActivity(Intent.createChooser(intent, "Compartir compra"))
+                            contexto.startActivity(Intent.createChooser(intent, contexto.getString(R.string.purchase_share_chooser)))
                         }
                     }) {
                         Icon(Icons.Outlined.Share, null, tint = MaterialTheme.colorScheme.onPrimary)
@@ -142,7 +147,7 @@ fun PantallaDetalleCompra(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("Total abonado", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(R.string.purchase_total_paid), style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text(
                                 viewModelMoneda.convertir(compra.total),
                                 style = MaterialTheme.typography.headlineSmall,
@@ -165,14 +170,14 @@ fun PantallaDetalleCompra(
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
-                                "Foto del ticket",
+                                stringResource(R.string.purchase_ticket_photo),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.padding(bottom = 8.dp)
                             )
                             AsyncImage(
                                 model = compra.imagenTicket,
-                                contentDescription = "Foto del ticket",
+                                contentDescription = stringResource(R.string.purchase_ticket_photo),
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(220.dp)
@@ -186,7 +191,7 @@ fun PantallaDetalleCompra(
             // Título lista de productos
             item {
                 Text(
-                    "Productos (${productos.size})",
+                    stringResource(R.string.purchase_products_count, productos.size),
                     style    = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
@@ -199,8 +204,8 @@ fun PantallaDetalleCompra(
                     headlineContent   = { Text(prod.nombre, fontWeight = FontWeight.SemiBold) },
                     supportingContent = {
                         Column {
-                            if (prod.codigo.isNotBlank()) Text("Cód: ${prod.codigo}", style = MaterialTheme.typography.labelSmall)
-                            Text("${prod.cantidad} × ${viewModelMoneda.convertir(prod.precio)}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            if (prod.codigo.isNotBlank()) Text(stringResource(R.string.product_code_prefix, prod.codigo), style = MaterialTheme.typography.labelSmall)
+                            Text(stringResource(R.string.product_qty_price, prod.cantidad, viewModelMoneda.convertir(prod.precio)), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     },
                     trailingContent = {
@@ -223,7 +228,7 @@ fun PantallaDetalleCompra(
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("Total calculado", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.purchase_total_calculated), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                         Text(
                             viewModelMoneda.convertir(productos.sumOf { it.precioTotal }),
                             style = MaterialTheme.typography.titleMedium,

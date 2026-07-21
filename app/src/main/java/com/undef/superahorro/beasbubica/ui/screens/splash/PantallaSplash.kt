@@ -12,9 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.undef.superahorro.R
 import com.undef.superahorro.ui.theme.*
 import com.undef.superahorro.viewmodel.ViewModelAuth
 import kotlinx.coroutines.delay
@@ -74,7 +76,7 @@ fun PantallaSplash(
             )
             Spacer(Modifier.height(16.dp))
             Text(
-                "SUPER AHORRO",
+                stringResource(R.string.app_brand),
                 style = MaterialTheme.typography.headlineLarge,
                 color = SurfaceWhite,
                 fontWeight = FontWeight.ExtraBold,
@@ -82,7 +84,7 @@ fun PantallaSplash(
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                "Controlá tus gastos de supermercado",
+                stringResource(R.string.app_tagline),
                 style = MaterialTheme.typography.bodyMedium,
                 color = SurfaceWhite.copy(alpha = 0.8f)
             )

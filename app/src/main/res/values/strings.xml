@@ -2,12 +2,14 @@
     <!-- App -->
     <string name="app_name">Super Ahorro</string>
     <string name="app_tagline">Controlá tus gastos de supermercado</string>
+    <string name="app_brand">SUPER AHORRO</string>
 
     <!-- Navegación -->
     <string name="nav_home">Inicio</string>
     <string name="nav_purchases">Compras</string>
     <string name="nav_history">Historial</string>
     <string name="nav_statistics">Estadísticas</string>
+    <string name="nav_products">Productos</string>
     <string name="nav_profile">Perfil</string>
 
     <!-- Acciones comunes -->
@@ -21,15 +23,21 @@
     <string name="action_add">Agregar</string>
     <string name="action_search">Buscar</string>
     <string name="action_see_all">Ver todas</string>
+    <string name="action_erase">Borrar</string>
+    <string name="action_new">Nuevo</string>
 
     <!-- Autenticación -->
     <string name="login_title">Iniciar sesión</string>
+    <string name="login_welcome_back">Bienvenido de nuevo</string>
     <string name="login_email">Correo electrónico</string>
     <string name="login_password">Contraseña</string>
     <string name="login_forgot_password">¿Olvidaste tu contraseña?</string>
     <string name="login_no_account">¿No tenés cuenta?</string>
     <string name="login_register">Registrate</string>
     <string name="register_title">Crear cuenta</string>
+    <string name="register_subtitle">Completá tus datos</string>
+    <string name="register_password_hint">(mínimo 6 caracteres)</string>
+    <string name="register_password_min">Mínimo 6 caracteres</string>
     <string name="register_name">Nombre</string>
     <string name="register_last_name">Apellido</string>
     <string name="register_confirm_password">Confirmar contraseña</string>
@@ -44,11 +52,22 @@
     <string name="purchase_date">Fecha</string>
     <string name="purchase_time">Hora</string>
     <string name="purchase_total">Total de la compra</string>
+    <string name="purchase_data_section">Datos de la compra</string>
+    <string name="purchase_other_market">Nombre del mercado</string>
+    <string name="purchase_no_products_yet">Todavía no agregaste productos</string>
+    <string name="purchase_total_auto">Se calcula automáticamente</string>
+    <string name="purchase_total_sum_hint">Suma de los productos agregados</string>
     <string name="purchase_ticket_photo">Foto del ticket</string>
     <string name="purchase_save">Guardar Compra</string>
-    <string name="purchase_share_text">Compra en %1$s\nFecha: %2$s %3$s\nTotal: $ %4$s</string>
+    <string name="purchase_share_text">Compra en %1$s\nFecha: %2$s %3$s\nTotal: %4$s</string>
+    <string name="purchase_share_chooser">Compartir compra</string>
     <string name="purchase_empty_title">Sin compras aún</string>
     <string name="purchase_empty_subtitle">Registrá tu primera compra tocando el botón +</string>
+    <string name="purchase_delete_title">Borrar compra</string>
+    <string name="purchase_delete_confirm">¿Seguro que querés borrar la compra en %1$s del %2$s? No se puede deshacer.</string>
+    <string name="purchase_total_paid">Total abonado</string>
+    <string name="purchase_total_calculated">Total calculado</string>
+    <string name="purchase_products_count">Productos (%1$d)</string>
 
     <!-- Productos -->
     <string name="product_new">Nuevo Producto</string>
@@ -59,13 +78,47 @@
     <string name="product_price">Precio unitario</string>
     <string name="product_total_price">Subtotal</string>
     <string name="product_add">Agregar Producto</string>
+    <string name="product_code_prefix">Cód: %1$s</string>
+    <string name="product_qty_short">x%1$d</string>
+    <string name="product_total_short">Total: $ %1$s</string>
+    <string name="product_qty_price">%1$d × %2$s</string>
+    <string name="product_price_simple">Precio</string>
+    <string name="product_price_each">$ %1$s c/u</string>
+    <string name="product_unit_cost">Costo unitario</string>
+    <string name="product_add_to_purchase">Agregar a la compra</string>
+    <string name="product_tab_manual">Ingresar datos</string>
+    <string name="product_code_example">Ej: 7790040552</string>
+    <string name="product_subtotal_detail">Subtotal (%1$d× $ %2$s)</string>
+    <string name="catalog_tap_hint">Tocá un producto para cargarlo</string>
+    <string name="product_code_optional">Código de barras (opcional)</string>
+    <!-- Mis Productos (catálogo personal) -->
+    <string name="products_my_title">Mis Productos</string>
+    <string name="products_empty_title">Sin productos guardados</string>
+    <string name="products_empty_subtitle">Tocá el botón + para agregar tus productos frecuentes</string>
+    <string name="products_frequent_hint">Tus productos frecuentes aparecen al agregar una compra.</string>
+    <string name="catalog_add_title">Agregar al catálogo</string>
 
     <!-- Historial -->
     <string name="history_title">Historial</string>
+    <string name="history_no_date">Sin fecha</string>
     <string name="history_filter_week">Semana</string>
     <string name="history_filter_month">Mes</string>
     <string name="history_filter_3months">3 Meses</string>
     <string name="history_filter_year">Año</string>
+    <string-array name="month_names">
+        <item>Enero</item>
+        <item>Febrero</item>
+        <item>Marzo</item>
+        <item>Abril</item>
+        <item>Mayo</item>
+        <item>Junio</item>
+        <item>Julio</item>
+        <item>Agosto</item>
+        <item>Septiembre</item>
+        <item>Octubre</item>
+        <item>Noviembre</item>
+        <item>Diciembre</item>
+    </string-array>
 
     <!-- Estadísticas -->
     <string name="stats_title">Estadísticas</string>
@@ -74,7 +127,11 @@
     <string name="stats_avg_per_purchase">Promedio</string>
     <string name="stats_favorite_market">Favorito</string>
     <string name="stats_monthly_chart">Gasto mensual</string>
+    <string name="stats_daily_chart">Gasto por día</string>
     <string name="stats_by_supermarket">Por supermercado</string>
+    <string name="stats_no_data">Sin datos</string>
+    <string name="stats_no_data_period">No hay compras en este período</string>
+    <string name="stats_pct_amount">%1$d%% · %2$s</string>
 
     <!-- Perfil -->
     <string name="profile_title">Mi Perfil</string>
@@ -87,6 +144,8 @@
     <string name="profile_logout">Cerrar sesión</string>
     <string name="profile_logout_confirm">¿Estás seguro que querés cerrar sesión?</string>
     <string name="profile_logout_yes">Sí, salir</string>
+    <string name="profile_saved">✓ Perfil actualizado</string>
+    <string name="profile_save_error">Error al guardar: %1$s</string>
 
     <!-- Settings -->
     <string name="settings_title">Configuración</string>
@@ -94,12 +153,20 @@
     <string name="settings_dark_mode">Modo oscuro</string>
     <string name="settings_preferences">Preferencias</string>
     <string name="settings_currency">Moneda</string>
+    <string name="settings_currency_display">Moneda de visualización</string>
+    <string name="settings_exchange_rate">1 USD = $ %1$s ARS</string>
+    <string name="settings_loading_rate">Obteniendo cotización…</string>
+    <string name="settings_refresh_rate">Actualizar cotización</string>
     <string name="settings_about">Acerca de</string>
     <string name="settings_version">Versión 1.0.0</string>
+    <string name="settings_version_authors">Versión 2.0 · Valentina Beas &amp; Mirko Bubica Hundt</string>
     <string name="settings_authors">Valentina Beas &amp; Mirko Bubica Hundt</string>
 
     <!-- Home -->
     <string name="home_greeting">¡Hola, %1$s! 👋</string>
+    <string name="home_greeting_simple">¡Hola! 👋</string>
+    <string name="home_month_expenses">Tus gastos de este mes</string>
+    <string name="home_total_spent">Total gastado</string>
     <string name="home_monthly_spent">Gasto del mes</string>
     <string name="home_quick_access">Accesos rápidos</string>
     <string name="home_latest_purchases">Últimas compras</string>
@@ -110,9 +177,28 @@
     <string name="ticket_add_photo">Agregar foto del ticket</string>
     <string name="ticket_camera">Cámara</string>
     <string name="ticket_gallery">Galería</string>
+    <string name="ticket_change_photo">Cambiar foto</string>
+
+    <!-- Formato y comunes -->
+    <string name="amount_format">$ %1$s</string>
+    <string name="currency_prefix">$ </string>
+    <string name="date_time_format">%1$s · %2$s</string>
+    <string name="date_placeholder">DD/MM/AAAA</string>
+    <string name="date_invalid">Fecha inválida</string>
+    <string name="time_placeholder">HH:MM</string>
+    <string name="time_invalid">Hora inválida</string>
 
     <!-- Errores -->
+    <string name="error_empty_fields">Completá todos los campos</string>
     <string name="error_generic">Ocurrió un error inesperado</string>
     <string name="error_loading">Error al cargar los datos</string>
     <string name="error_network">Sin conexión a internet</string>
+    <string name="error_unknown">Error desconocido</string>
+    <string name="error_with_detail">Error: %1$s</string>
+
+    <!-- Errores de autenticación (traducción de mensajes de Supabase) -->
+    <string name="auth_error_invalid_credentials">Email o contraseña incorrectos</string>
+    <string name="auth_error_email_not_confirmed">Confirmá tu email antes de iniciar sesión</string>
+    <string name="auth_error_user_exists">Ya existe una cuenta con ese email</string>
+    <string name="auth_error_weak_password">La contraseña debe tener al menos 6 caracteres</string>
 </resources>

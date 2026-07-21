@@ -7,8 +7,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.undef.superahorro.R
 import com.undef.superahorro.ui.components.BarraSuperior
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
 import com.undef.superahorro.viewmodel.ViewModelMoneda
@@ -31,7 +33,7 @@ fun PantallaConfiguracion(
 
 
     Scaffold(topBar = {
-        BarraSuperior("Configuración", mostrarVolver = true, alVolverAtras = alVolverAtras)
+        BarraSuperior(stringResource(R.string.settings_title), mostrarVolver = true, alVolverAtras = alVolverAtras)
     }) { padding ->
         Column(
             modifier = Modifier
@@ -39,21 +41,21 @@ fun PantallaConfiguracion(
                 .padding(padding)
                 .padding(16.dp)
         ) {
-            SeccionConfig("Apariencia")
-            ToggleConfig(Icons.Outlined.DarkMode, "Modo oscuro", modoOscuro, alCambiarModo)
+            SeccionConfig(stringResource(R.string.settings_appearance))
+            ToggleConfig(Icons.Outlined.DarkMode, stringResource(R.string.settings_dark_mode), modoOscuro, alCambiarModo)
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
-            SeccionConfig("Moneda")
+            SeccionConfig(stringResource(R.string.settings_currency))
 
             // Selector ARS / USD conectado al ViewModel
             ListItem(
-                headlineContent = { Text("Moneda de visualización") },
+                headlineContent = { Text(stringResource(R.string.settings_currency_display)) },
                 supportingContent = {
                     if (monedaActiva == "USD" && tipoCambio != null) {
-                        Text("1 USD = $ ${String.format("%.0f", tipoCambio!!.valorPromedio)} ARS")
+                        Text(stringResource(R.string.settings_exchange_rate, String.format("%.0f", tipoCambio!!.valorPromedio)))
                     } else if (cargandoCotizacion) {
-                        Text("Obteniendo cotización...")
+                        Text(stringResource(R.string.settings_loading_rate))
                     }
                 },
                 leadingContent = {
@@ -89,16 +91,16 @@ fun PantallaConfiguracion(
                     }
                     Icon(Icons.Outlined.Refresh, null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(6.dp))
-                    Text("Actualizar cotización")
+                    Text(stringResource(R.string.settings_refresh_rate))
                 }
             }
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
-            SeccionConfig("Acerca de")
+            SeccionConfig(stringResource(R.string.settings_about))
             ListItem(
-                headlineContent = { Text("Super Ahorro") },
-                supportingContent = { Text("Versión 2.0 · Valentina Beas & Mirko Bubica Hundt") },
+                headlineContent = { Text(stringResource(R.string.app_name)) },
+                supportingContent = { Text(stringResource(R.string.settings_version_authors)) },
                 leadingContent = { Icon(Icons.Outlined.Info, null, tint = MaterialTheme.colorScheme.primary) },
                 modifier = Modifier.clip(MaterialTheme.shapes.medium),
                 colors = ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceVariant)

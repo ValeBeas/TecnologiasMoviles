@@ -7,8 +7,10 @@ import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.*
+import com.undef.superahorro.R
 import java.util.Calendar
 
 
@@ -21,7 +23,7 @@ fun CampoFecha(
     valor: String,
     alCambiar: (String) -> Unit,
     modifier: Modifier = Modifier,
-    etiqueta: String = "Fecha"
+    etiqueta: String = stringResource(R.string.purchase_date)
 ) {
     val anioActual = Calendar.getInstance().get(Calendar.YEAR)
 
@@ -35,7 +37,7 @@ fun CampoFecha(
         },
         label = { Text(etiqueta) },
         leadingIcon = { Icon(Icons.Outlined.CalendarMonth, null) },
-        placeholder = { Text("DD/MM/AAAA") },
+        placeholder = { Text(stringResource(R.string.date_placeholder)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
         modifier = modifier,
@@ -43,7 +45,7 @@ fun CampoFecha(
         isError = valor.length == 10 && !fechaValida(valor, anioActual),
         supportingText = {
             if (valor.length == 10 && !fechaValida(valor, anioActual)) {
-                Text("Fecha inválida", color = MaterialTheme.colorScheme.error)
+                Text(stringResource(R.string.date_invalid), color = MaterialTheme.colorScheme.error)
             }
         }
     )
@@ -59,7 +61,7 @@ fun CampoHora(
     valor: String,
     alCambiar: (String) -> Unit,
     modifier: Modifier = Modifier,
-    etiqueta: String = "Hora"
+    etiqueta: String = stringResource(R.string.purchase_time)
 ) {
     OutlinedTextField(
         value = valor,
@@ -71,7 +73,7 @@ fun CampoHora(
         },
         label = { Text(etiqueta) },
         leadingIcon = { Icon(Icons.Outlined.Schedule, null) },
-        placeholder = { Text("HH:MM") },
+        placeholder = { Text(stringResource(R.string.time_placeholder)) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
         modifier = modifier,
@@ -79,7 +81,7 @@ fun CampoHora(
         isError = valor.length == 5 && !horaValida(valor),
         supportingText = {
             if (valor.length == 5 && !horaValida(valor)) {
-                Text("Hora inválida", color = MaterialTheme.colorScheme.error)
+                Text(stringResource(R.string.time_invalid), color = MaterialTheme.colorScheme.error)
             }
         }
     )

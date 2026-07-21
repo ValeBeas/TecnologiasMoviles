@@ -16,11 +16,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.undef.superahorro.R
 import com.undef.superahorro.ui.components.BarraNavegacionInferior
 import com.undef.superahorro.ui.components.TarjetaCompra
 import com.undef.superahorro.ui.navigation.Pantalla
@@ -56,7 +58,7 @@ fun PantallaInicio(
             ExtendedFloatingActionButton(
                 onClick = alAgregarCompra,
                 icon = { Icon(Icons.Outlined.Add, null) },
-                text = { Text("Nueva compra") },
+                text = { Text(stringResource(R.string.home_new_purchase)) },
                 containerColor = MaterialTheme.colorScheme.tertiary,
                 contentColor = MaterialTheme.colorScheme.onTertiary
             )
@@ -84,13 +86,13 @@ fun PantallaInicio(
                     ) {
                         Column {
                             Text(
-                                "¡Hola! 👋",
+                                stringResource(R.string.home_greeting_simple),
                                 style = MaterialTheme.typography.titleLarge,
                                 color = SurfaceWhite,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                "Tus gastos de este mes",
+                                stringResource(R.string.home_month_expenses),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = SurfaceWhite.copy(alpha = 0.8f)
                             )
@@ -111,7 +113,7 @@ fun PantallaInicio(
                         ) {
                             Column {
                                 Text(
-                                    "Total gastado",
+                                    stringResource(R.string.home_total_spent),
                                     style = MaterialTheme.typography.labelMedium,
                                     color = SurfaceWhite.copy(alpha = 0.8f)
                                 )
@@ -124,7 +126,7 @@ fun PantallaInicio(
                             }
                             Column(horizontalAlignment = Alignment.End) {
                                 Text(
-                                    "Compras",
+                                    stringResource(R.string.stats_total_purchases),
                                     style = MaterialTheme.typography.labelMedium,
                                     color = SurfaceWhite.copy(alpha = 0.8f)
                                 )
@@ -143,7 +145,7 @@ fun PantallaInicio(
             // Accesos rápidos
             Spacer(Modifier.height(20.dp))
             Text(
-                "Accesos rápidos",
+                stringResource(R.string.home_quick_access),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(horizontal = 20.dp)
@@ -153,13 +155,13 @@ fun PantallaInicio(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                AccesoRapido(Icons.Outlined.ShoppingCart, "Mis Compras", Modifier.weight(1f)) {
+                AccesoRapido(Icons.Outlined.ShoppingCart, stringResource(R.string.purchase_list), Modifier.weight(1f)) {
                     navController.navigate(Pantalla.ListaCompras.ruta)
                 }
-                AccesoRapido(Icons.Outlined.History, "Historial", Modifier.weight(1f)) {
+                AccesoRapido(Icons.Outlined.History, stringResource(R.string.nav_history), Modifier.weight(1f)) {
                     navController.navigate(Pantalla.Historial.ruta)
                 }
-                AccesoRapido(Icons.Outlined.BarChart, "Estadísticas", Modifier.weight(1f)) {
+                AccesoRapido(Icons.Outlined.BarChart, stringResource(R.string.nav_statistics), Modifier.weight(1f)) {
                     navController.navigate(Pantalla.Estadisticas.ruta)
                 }
             }
@@ -171,9 +173,9 @@ fun PantallaInicio(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Últimas compras", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.home_latest_purchases), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 TextButton(onClick = { navController.navigate(Pantalla.ListaCompras.ruta) }) {
-                    Text("Ver todas")
+                    Text(stringResource(R.string.action_see_all))
                 }
             }
             compras.take(3).forEach { compra ->

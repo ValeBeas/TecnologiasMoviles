@@ -2,6 +2,7 @@ package com.undef.superahorro.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.undef.superahorro.R
 import com.undef.superahorro.domain.model.Compra
 import android.content.Context
 import com.undef.superahorro.data.repository.RepositorioComprasSupabase
@@ -12,12 +13,14 @@ import java.util.Calendar
 
 /**
  * Los cuatro períodos de tiempo disponibles en las estadísticas.
+ * Cada uno lleva el id del recurso de texto (no el texto), para que la UI lo
+ * resuelva con stringResource(...) y quede internacionalizado.
  */
-enum class PeriodoEstadisticas(val etiqueta: String) {
-    SEMANA("Semana"),
-    MES("Mes"),
-    TRES_MESES("3 Meses"),
-    ANIO("Año")
+enum class PeriodoEstadisticas(val etiquetaRes: Int) {
+    SEMANA(R.string.history_filter_week),
+    MES(R.string.history_filter_month),
+    TRES_MESES(R.string.history_filter_3months),
+    ANIO(R.string.history_filter_year)
 }
 
 /**

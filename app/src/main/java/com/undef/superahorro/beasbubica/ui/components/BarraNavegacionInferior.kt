@@ -7,8 +7,10 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.undef.superahorro.R
 import com.undef.superahorro.ui.navigation.Pantalla
 
 
@@ -24,12 +26,12 @@ fun BarraNavegacionInferior(navController: NavController) {
 
     // Definición de los ítems de la barra inferior
     val items = listOf(
-        Triple(Pantalla.Inicio.ruta,        "Inicio",        Icons.Outlined.Home),
-        Triple(Pantalla.ListaCompras.ruta,  "Compras",       Icons.Outlined.ShoppingCart),
-        Triple(Pantalla.Historial.ruta,     "Historial",     Icons.Outlined.History),
-        Triple(Pantalla.Estadisticas.ruta,  "Estadísticas",  Icons.Outlined.BarChart),
-        Triple(Pantalla.MisProductos.ruta,  "Productos",     Icons.Outlined.Inventory2),
-        Triple(Pantalla.Perfil.ruta,        "Perfil",        Icons.Outlined.Person),
+        Triple(Pantalla.Inicio.ruta,        stringResource(R.string.nav_home),       Icons.Outlined.Home),
+        Triple(Pantalla.ListaCompras.ruta,  stringResource(R.string.nav_purchases),   Icons.Outlined.ShoppingCart),
+        Triple(Pantalla.Historial.ruta,     stringResource(R.string.nav_history),     Icons.Outlined.History),
+        Triple(Pantalla.Estadisticas.ruta,  stringResource(R.string.nav_statistics),  Icons.Outlined.BarChart),
+        Triple(Pantalla.MisProductos.ruta,  stringResource(R.string.nav_products),    Icons.Outlined.Inventory2),
+        Triple(Pantalla.Perfil.ruta,        stringResource(R.string.nav_profile),     Icons.Outlined.Person),
     )
 
     NavigationBar(tonalElevation = 0.dp) {

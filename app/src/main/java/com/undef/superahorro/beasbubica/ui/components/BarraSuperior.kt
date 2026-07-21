@@ -5,6 +5,8 @@ import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.undef.superahorro.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,7 +28,7 @@ fun BarraSuperior(
         navigationIcon = {
             if (mostrarVolver) {
                 IconButton(onClick = alVolverAtras) {
-                    Icon(Icons.Outlined.ArrowBackIosNew, contentDescription = "Volver")
+                    Icon(Icons.Outlined.ArrowBackIosNew, contentDescription = stringResource(R.string.action_back))
                 }
             }
         },
@@ -34,7 +36,7 @@ fun BarraSuperior(
             acciones()
             if (mostrarConfiguracion) {
                 IconButton(onClick = alAbrirConfiguracion) {
-                    Icon(Icons.Outlined.Settings, contentDescription = "Configuración")
+                    Icon(Icons.Outlined.Settings, contentDescription = stringResource(R.string.action_settings))
                 }
             }
         },

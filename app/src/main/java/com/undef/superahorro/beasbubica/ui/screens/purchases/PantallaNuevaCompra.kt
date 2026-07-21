@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.undef.superahorro.R
 import com.undef.superahorro.data.repository.RepositorioComprasSupabase
 import com.undef.superahorro.domain.model.Compra
 import com.undef.superahorro.domain.model.calcularTotal
@@ -127,12 +129,12 @@ fun PantallaNuevaCompra(
     Scaffold(
         topBar = {
             BarraSuperior(
-                titulo = "Nueva Compra",
+                titulo = stringResource(R.string.purchase_new),
                 mostrarVolver = true,
                 alVolverAtras = { viewModel.limpiar(); alVolverAtras() },
                 acciones = {
                     TextButton(onClick = { viewModel.limpiar(); alVolverAtras() }) {
-                        Text("Cancelar", color = MaterialTheme.colorScheme.onPrimary)
+                        Text(stringResource(R.string.action_cancel), color = MaterialTheme.colorScheme.onPrimary)
                     }
                 }
             )
@@ -146,7 +148,7 @@ fun PantallaNuevaCompra(
                 .padding(24.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Datos de la compra", style = MaterialTheme.typography.titleMedium,
+            Text(stringResource(R.string.purchase_data_section), style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary)
 
             // Dropdown supermercado — estado en el ViewModel
@@ -154,7 +156,7 @@ fun PantallaNuevaCompra(
                 OutlinedTextField(
                     value = supermercado, onValueChange = {},
                     readOnly = true,
-                    label = { Text("Supermercado") },
+                    label = { Text(stringResource(R.string.purchase_supermarket)) },
                     leadingIcon = { Icon(Icons.Outlined.Store, null) },
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandido) },
                     modifier = Modifier.fillMaxWidth().menuAnchor(),
@@ -178,7 +180,7 @@ fun PantallaNuevaCompra(
                 OutlinedTextField(
                     value = otroMercado,
                     onValueChange = { viewModel.setOtroMercado(it) },
-                    label = { Text("Nombre del mercado") },
+                    label = { Text(stringResource(R.string.purchase_other_market)) },
                     leadingIcon = { Icon(Icons.Outlined.Edit, null) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -207,13 +209,13 @@ fun PantallaNuevaCompra(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Productos (${productos.size})",
+                Text(stringResource(R.string.purchase_products_count, productos.size),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary)
                 FilledTonalButton(onClick = { navController.navigate(Pantalla.NuevoProducto.ruta) }) {
                     Icon(Icons.Outlined.Add, null, modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(6.dp))
-                    Text("Agregar producto")
+                    Text(stringResource(R.string.product_add))
                 }
             }
 
@@ -222,7 +224,7 @@ fun PantallaNuevaCompra(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
                     Box(modifier = Modifier.fillMaxWidth().padding(20.dp),
                         contentAlignment = Alignment.Center) {
-                        Text("Todavía no agregaste productos",
+                        Text(stringResource(R.string.purchase_no_products_yet),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
@@ -244,12 +246,12 @@ fun PantallaNuevaCompra(
 
             // Total solo lectura
             OutlinedTextField(
-                value = if (totalCalculado > 0) "$ ${formateador.format(totalCalculado)}" else "",
+                value = if (totalCalculado > 0) stringResource(R.string.amount_format, formateador.format(totalCalculado)) else "",
                 onValueChange = {}, readOnly = true,
-                label = { Text("Total de la compra") },
+                label = { Text(stringResource(R.string.purchase_total)) },
                 leadingIcon = { Icon(Icons.Outlined.AttachMoney, null) },
-                placeholder = { Text("Se calcula automáticamente") },
-                supportingText = { Text("Suma de los productos agregados") },
+                placeholder = { Text(stringResource(R.string.purchase_total_auto)) },
+                supportingText = { Text(stringResource(R.string.purchase_total_sum_hint)) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.medium
             )
@@ -257,7 +259,7 @@ fun PantallaNuevaCompra(
             HorizontalDivider()
 
             // Foto del ticket
-            Text("Foto del ticket", style = MaterialTheme.typography.titleMedium,
+            Text(stringResource(R.string.purchase_ticket_photo), style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary)
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -270,12 +272,12 @@ fun PantallaNuevaCompra(
                     if (imagenUri != null) {
                         AsyncImage(
                             model = imagenUri,
-                            contentDescription = "Foto del ticket",
+                            contentDescription = stringResource(R.string.purchase_ticket_photo),
                             modifier = Modifier.fillMaxWidth().height(200.dp)
                         )
                         Spacer(Modifier.height(12.dp))
                         TextButton(onClick = { imagenUri = null }) {
-                            Text("Cambiar foto", color = MaterialTheme.colorScheme.error)
+                            Text(stringResource(R.string.ticket_change_photo), color = MaterialTheme.colorScheme.error)
                         }
                     } else {
                         Icon(Icons.Outlined.Receipt, null,
@@ -287,12 +289,12 @@ fun PantallaNuevaCompra(
                             OutlinedButton(onClick = { abrirCamara() }) {
                                 Icon(Icons.Outlined.CameraAlt, null, Modifier.size(18.dp))
                                 Spacer(Modifier.width(4.dp))
-                                Text("Cámara")
+                                Text(stringResource(R.string.ticket_camera))
                             }
                             OutlinedButton(onClick = { launcherGaleria.launch("image/*") }) {
                                 Icon(Icons.Outlined.Photo, null, Modifier.size(18.dp))
                                 Spacer(Modifier.width(4.dp))
-                                Text("Galería")
+                                Text(stringResource(R.string.ticket_gallery))
                             }
                         }
                     }
@@ -347,7 +349,7 @@ fun PantallaNuevaCompra(
                             viewModel.limpiar()
                             alVolverAtras()
                         }.onFailure { e ->
-                            mensajeError = "Error al guardar: ${e.message}"
+                            mensajeError = contexto.getString(R.string.profile_save_error, e.message ?: "")
                         }
                         guardando = false
                     }
@@ -363,7 +365,7 @@ fun PantallaNuevaCompra(
                 }
                 Icon(Icons.Outlined.Save, null)
                 Spacer(Modifier.width(8.dp))
-                Text("Guardar Compra", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.purchase_save), style = MaterialTheme.typography.labelLarge)
             }
         }
     }
@@ -384,11 +386,11 @@ private fun FilaProducto(
         Column(modifier = Modifier.weight(1f)) {
             Text(producto.nombre, style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold)
-            Text("$ ${formateador.format(producto.costo)} c/u",
+            Text(stringResource(R.string.product_price_each, formateador.format(producto.costo)),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant)
             if (producto.codigoBarras.isNotBlank())
-                Text("Cód: ${producto.codigoBarras}",
+                Text(stringResource(R.string.product_code_prefix, producto.codigoBarras),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
@@ -420,7 +422,7 @@ private fun FilaProducto(
                 Icon(Icons.Outlined.Add, null, modifier = Modifier.size(16.dp),
                     tint = MaterialTheme.colorScheme.onPrimary)
             }
-            Text("$ ${formateador.format(producto.subtotal)}",
+            Text(stringResource(R.string.amount_format, formateador.format(producto.subtotal)),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,

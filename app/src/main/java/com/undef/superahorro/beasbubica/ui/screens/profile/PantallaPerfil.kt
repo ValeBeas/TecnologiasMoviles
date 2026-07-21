@@ -15,9 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.undef.superahorro.R
 import com.undef.superahorro.data.repository.RepositorioPerfilSupabase
 import com.undef.superahorro.ui.components.BarraNavegacionInferior
 import com.undef.superahorro.ui.components.BarraSuperior
@@ -63,22 +65,22 @@ fun PantallaPerfil(
         AlertDialog(
             onDismissRequest = { mostrarDialogo = false },
             icon    = { Icon(Icons.Outlined.Logout, null) },
-            title   = { Text("Cerrar sesión") },
-            text    = { Text("¿Estás seguro que querés cerrar sesión?") },
+            title   = { Text(stringResource(R.string.profile_logout)) },
+            text    = { Text(stringResource(R.string.profile_logout_confirm)) },
             confirmButton = {
                 TextButton(onClick = {
                     mostrarDialogo = false
                     viewModelAuth.cerrarSesion { alCerrarSesion() }
-                }) { Text("Sí, salir", color = MaterialTheme.colorScheme.error) }
+                }) { Text(stringResource(R.string.profile_logout_yes), color = MaterialTheme.colorScheme.error) }
             },
             dismissButton = {
-                TextButton(onClick = { mostrarDialogo = false }) { Text("Cancelar") }
+                TextButton(onClick = { mostrarDialogo = false }) { Text(stringResource(R.string.action_cancel)) }
             }
         )
     }
 
     Scaffold(
-        topBar = { BarraSuperior("Mi Perfil", mostrarVolver = true, alVolverAtras = alVolverAtras) },
+        topBar = { BarraSuperior(stringResource(R.string.profile_title), mostrarVolver = true, alVolverAtras = alVolverAtras) },
         bottomBar = { BarraNavegacionInferior(navController) }
     ) { padding ->
         Column(
@@ -105,14 +107,14 @@ fun PantallaPerfil(
             }
 
             Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("Mis datos", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.profile_my_data), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
 
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    OutlinedTextField(value = nombre, onValueChange = { nombre = it; mensajeGuardado = "" }, label = { Text("Nombre") }, singleLine = true, modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.medium)
-                    OutlinedTextField(value = apellido, onValueChange = { apellido = it; mensajeGuardado = "" }, label = { Text("Apellido") }, singleLine = true, modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.medium)
+                    OutlinedTextField(value = nombre, onValueChange = { nombre = it; mensajeGuardado = "" }, label = { Text(stringResource(R.string.register_name)) }, singleLine = true, modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.medium)
+                    OutlinedTextField(value = apellido, onValueChange = { apellido = it; mensajeGuardado = "" }, label = { Text(stringResource(R.string.register_last_name)) }, singleLine = true, modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.medium)
                 }
 
-                OutlinedTextField(value = email, onValueChange = {}, label = { Text("Correo electrónico") }, leadingIcon = { Icon(Icons.Outlined.Email, null) }, singleLine = true, modifier = Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium, enabled = false)
+                OutlinedTextField(value = email, onValueChange = {}, label = { Text(stringResource(R.string.login_email)) }, leadingIcon = { Icon(Icons.Outlined.Email, null) }, singleLine = true, modifier = Modifier.fillMaxWidth(), shape = MaterialTheme.shapes.medium, enabled = false)
 
                 // Mensaje de confirmación
                 if (mensajeGuardado.isNotBlank()) {
@@ -125,8 +127,8 @@ fun PantallaPerfil(
                         scope.launch {
                             guardando = true
                             repositorio.guardarPerfil(nombre.trim(), apellido.trim())
-                                .onSuccess { mensajeGuardado = "✓ Perfil actualizado" }
-                                .onFailure { mensajeGuardado = "Error al guardar: ${it.message}" }
+                                .onSuccess { mensajeGuardado = contexto.getString(R.string.profile_saved) }
+                                .onFailure { mensajeGuardado = contexto.getString(R.string.profile_save_error, it.message ?: "") }
                             guardando = false
                         }
                     },
@@ -140,12 +142,12 @@ fun PantallaPerfil(
                     }
                     Icon(Icons.Outlined.Save, null)
                     Spacer(Modifier.width(8.dp))
-                    Text("Guardar cambios")
+                    Text(stringResource(R.string.profile_save))
                 }
 
                 HorizontalDivider()
-                Text("Cuenta", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-OpcionPerfil(Icons.Outlined.Info, "Sobre la app") {}
+                Text(stringResource(R.string.profile_account), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                OpcionPerfil(Icons.Outlined.Info, stringResource(R.string.profile_about)) {}
                 Spacer(Modifier.height(8.dp))
 
                 OutlinedButton(
@@ -157,7 +159,7 @@ OpcionPerfil(Icons.Outlined.Info, "Sobre la app") {}
                 ) {
                     Icon(Icons.Outlined.Logout, null)
                     Spacer(Modifier.width(8.dp))
-                    Text("Cerrar sesión")
+                    Text(stringResource(R.string.profile_logout))
                 }
             }
         }
