@@ -139,7 +139,4 @@ class RepositorioAuthSupabase(private val contexto: Context) {
         runCatching { BaseDeDatos.obtenerInstancia(contexto).daoCompra().eliminarTodas() }
         preferencias.cerrarSesion()
     }
-
-    fun estaLogueado(): Boolean =
-        supabase.auth.currentUserOrNull() != null
 }

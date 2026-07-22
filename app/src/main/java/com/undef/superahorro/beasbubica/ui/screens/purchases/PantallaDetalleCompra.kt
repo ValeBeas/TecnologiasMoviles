@@ -27,8 +27,6 @@ import com.undef.superahorro.ui.theme.SuperAhorroTheme
 import com.undef.superahorro.viewmodel.ViewModelCompras
 import com.undef.superahorro.viewmodel.ViewModelMoneda
 import kotlinx.coroutines.launch
-import java.text.NumberFormat
-import java.util.Locale
 
 
 @Composable
@@ -237,7 +235,7 @@ fun PantallaDetalleCompra(
                             }
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                                 Text(stringResource(R.string.purchase_discount), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                Text("− " + viewModelMoneda.convertir(compra.descuento), color = MaterialTheme.colorScheme.error)
+                                Text(stringResource(R.string.discount_amount_format, viewModelMoneda.convertir(compra.descuento)), color = MaterialTheme.colorScheme.error)
                             }
                         }
                         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

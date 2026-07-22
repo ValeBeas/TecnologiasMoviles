@@ -16,7 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.platform.LocalContext
 import com.undef.superahorro.R
 import com.undef.superahorro.ui.components.*
@@ -24,8 +23,6 @@ import com.undef.superahorro.ui.theme.*
 import com.undef.superahorro.viewmodel.PeriodoEstadisticas
 import com.undef.superahorro.viewmodel.ViewModelEstadisticas
 import com.undef.superahorro.viewmodel.ViewModelMoneda
-import java.text.NumberFormat
-import java.util.Locale
 
 /**
  * Estadísticas de gastos con filtros por Semana, Mes, 3 Meses y Año.
@@ -42,7 +39,6 @@ fun PantallaEstadisticas(
     val estadoStats by viewModel.estadoEstadisticas.collectAsState()
     val periodo    by viewModel.periodoSeleccionado.collectAsState()
     val stats      = estadoStats.datos
-    val formateador = NumberFormat.getNumberInstance(Locale("es", "AR"))
 
     Scaffold(
         topBar = { BarraSuperior(titulo = stringResource(R.string.stats_title), mostrarVolver = true, alVolverAtras = alVolverAtras) },

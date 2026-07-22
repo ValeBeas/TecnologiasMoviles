@@ -24,9 +24,6 @@ class ViewModelAuth(private val contexto: Context) : ViewModel() {
     private val _estadoUsuario = MutableStateFlow(EstadoUi<Usuario>())
     val estadoUsuario: StateFlow<EstadoUi<Usuario>> = _estadoUsuario.asStateFlow()
 
-    private val _estaLogueado = MutableStateFlow(false)
-    val estaLogueado: StateFlow<Boolean> = _estaLogueado.asStateFlow()
-
     // Verifica la sesión guardada al iniciar la app
     fun verificarSesion(onExito: () -> Unit, onSinSesion: () -> Unit) {
         viewModelScope.launch {
@@ -34,14 +31,12 @@ class ViewModelAuth(private val contexto: Context) : ViewModel() {
             repositorio.restaurarSesion()
                 .onSuccess { usuario ->
                     _estadoUsuario.value = EstadoUi(datos = usuario)
-                    _estaLogueado.value = true
                     // Sincronizar Room completo al restaurar sesión (apertura de app)
                     repositorioCompras.sincronizarCompleto()
                     onExito()
                 }
                 .onFailure {
                     _estadoUsuario.value = EstadoUi()
-                    _estaLogueado.value = false
                     onSinSesion()
                 }
         }
@@ -59,7 +54,6 @@ class ViewModelAuth(private val contexto: Context) : ViewModel() {
             repositorio.iniciarSesion(email, contrasena)
                 .onSuccess { usuario ->
                     _estadoUsuario.value = EstadoUi(datos = usuario)
-                    _estaLogueado.value = true
                     // Sincronizar Room completo al hacer login
                     repositorioCompras.sincronizarCompleto()
                     onExito()
@@ -85,7 +79,6 @@ class ViewModelAuth(private val contexto: Context) : ViewModel() {
             repositorio.registrarse(email, contrasena, nombre, apellido)
                 .onSuccess { usuario ->
                     _estadoUsuario.value = EstadoUi(datos = usuario)
-                    _estaLogueado.value = true
                     // Sincronizar Room (usuario nuevo — Room vacío)
                     repositorioCompras.sincronizarCompleto()
                     onExito()
@@ -110,7 +103,6 @@ class ViewModelAuth(private val contexto: Context) : ViewModel() {
     fun cerrarSesion(onCompleto: () -> Unit) {
         viewModelScope.launch {
             repositorio.cerrarSesion()
-            _estaLogueado.value = false
             _estadoUsuario.value = EstadoUi()
             onCompleto()
         }

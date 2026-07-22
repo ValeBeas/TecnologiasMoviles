@@ -29,14 +29,10 @@ val SurfaceWhite  = Color(0xFFFFFFFF)  // Blanco puro — cards
 // --- Texto claro ---
 val TextPrimary   = Color(0xFF1A1040)  // Casi negro violáceo — texto principal
 val TextSecondary = Color(0xFF6B5FA0)  // Índigo grisáceo — texto secundario
-val TextHint      = Color(0xFFB0A8D4)  // Lila suave — placeholders
 
 // --- Estados ---
 val ColorError        = Color(0xFFD32F2F)
 val ColorErrorLight   = Color(0xFFFFEBEE)
-val ColorWarning      = Color(0xFFF57F17)
-val ColorWarningLight = Color(0xFFFFF3E0)
-val ColorSuccess      = Color(0xFF2E7D52)
 val ColorSuccessLight = Color(0xFFE8F5E9)
 
 // --- Divisores y bordes ---

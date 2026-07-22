@@ -208,58 +208,6 @@ fun PantallaNuevoProducto(
 }
 
 
-@Composable
-private fun DialogoAgregarAlCatalogo(
-    onAgregar: (String, Double, String) -> Unit,
-    onCancelar: () -> Unit
-) {
-    var nombre  by remember { mutableStateOf("") }
-    var precio  by remember { mutableStateOf("") }
-    var codigo  by remember { mutableStateOf("") }
-    val precioOk = precio.toDoubleOrNull() ?: 0.0
-
-    AlertDialog(
-        onDismissRequest = onCancelar,
-        title = { Text(stringResource(R.string.catalog_add_title)) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                OutlinedTextField(
-                    value = nombre, onValueChange = { nombre = it },
-                    label = { Text(stringResource(R.string.register_name) + " *") },
-                    leadingIcon = { Icon(Icons.Outlined.Inventory2, null) },
-                    singleLine = true, modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.medium
-                )
-                OutlinedTextField(
-                    value = precio, onValueChange = { precio = it },
-                    label = { Text(stringResource(R.string.product_price_simple) + " *") },
-                    prefix = { Text(stringResource(R.string.currency_prefix)) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    singleLine = true, modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.medium
-                )
-                OutlinedTextField(
-                    value = codigo, onValueChange = { codigo = it },
-                    label = { Text(stringResource(R.string.product_code_optional)) },
-                    leadingIcon = { Icon(Icons.Outlined.QrCodeScanner, null) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true, modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.medium
-                )
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = { onAgregar(nombre.trim(), precioOk, codigo.trim()) },
-                enabled = nombre.isNotBlank() && precioOk > 0
-            ) { Text(stringResource(R.string.action_add)) }
-        },
-        dismissButton = {
-            TextButton(onClick = onCancelar) { Text(stringResource(R.string.action_cancel)) }
-        }
-    )
-}
-
 @Preview(showBackground = true)
 @Composable
 private fun Vista() = SuperAhorroTheme { PantallaNuevoProducto({}, {}) }

@@ -9,14 +9,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.undef.superahorro.data.local.datastore.PreferenciasUsuario
-import com.undef.superahorro.data.local.datastore.dataStore
 import com.undef.superahorro.ui.navigation.GrafoNavegacion
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
 import com.undef.superahorro.viewmodel.ViewModelAuth
 import com.undef.superahorro.viewmodel.ViewModelMoneda
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -28,7 +27,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Leer el modo oscuro guardado antes de que se dibuje la UI (evita flash)
+        // Leer el modo oscuro guardado antes de dibujar la UI.
+        // runBlocking es intencional acá: bloquea unos milisegundos para leer un booleano
+        // local de DataStore y así evitar el "flash" de tema claro al arrancar en modo oscuro.
         val modoOscuroInicial = runBlocking {
             PreferenciasUsuario(applicationContext).flujoModoOscuro.first()
         }
@@ -49,8 +50,9 @@ class MainActivity : ComponentActivity() {
                         modoOscuro          = modoOscuro,
                         alCambiarModoOscuro = { nuevo ->
                             modoOscuro = nuevo
-                            // Persistir el cambio en DataStore
-                            kotlinx.coroutines.GlobalScope.launch {
+                            // Persistir el cambio en DataStore con un scope atado al ciclo
+                            // de vida de la Activity (no GlobalScope, que vive sin control)
+                            lifecycleScope.launch {
                                 preferencias.guardarModoOscuro(nuevo)
                             }
                         },

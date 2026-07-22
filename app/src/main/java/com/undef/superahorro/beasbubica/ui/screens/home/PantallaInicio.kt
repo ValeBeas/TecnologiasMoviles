@@ -46,8 +46,8 @@ fun PantallaInicio(
     val viewModel = remember { ViewModelCompras(contexto) }
     val estadoCompras by viewModel.estadoCompras.collectAsState()
 
-    // Recargar cada vez que el usuario entra al Home
-    LaunchedEffect(Unit) { viewModel.cargarCompras() }
+    // No hace falta "recargar" acá: el ViewModel ya colecta el Flow de Room en su init,
+    // y Room re-emite solo cada vez que cambian los datos (por eso la lista se actualiza sola).
     val compras = estadoCompras.datos ?: emptyList()
     val monedaActiva by viewModelMoneda.monedaActiva.collectAsState()
 

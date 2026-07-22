@@ -14,11 +14,9 @@
 
     <!-- Acciones comunes -->
     <string name="action_back">Volver</string>
-    <string name="action_save">Guardar</string>
     <string name="action_cancel">Cancelar</string>
     <string name="action_edit">Editar</string>
     <string name="action_delete">Eliminar</string>
-    <string name="action_share">Compartir</string>
     <string name="action_settings">Configuración</string>
     <string name="action_add">Agregar</string>
     <string name="action_search">Buscar</string>
@@ -78,17 +76,12 @@
     <string name="purchase_subtotal">Subtotal</string>
     <string name="purchase_discount">Descuento</string>
     <string name="purchase_discount_optional">Descuento (opcional)</string>
-    <string name="discount_amount_format">− $ %1$s</string>
+    <string name="discount_amount_format">− %1$s</string>
     <string name="purchase_products_count">Productos (%1$d)</string>
 
     <!-- Productos -->
-    <string name="product_new">Nuevo Producto</string>
-    <string name="product_code">Código de barras</string>
     <string name="product_name">Nombre del producto</string>
-    <string name="product_description">Descripción (opcional)</string>
     <string name="product_quantity">Cantidad</string>
-    <string name="product_price">Precio unitario</string>
-    <string name="product_total_price">Subtotal</string>
     <string name="product_add">Agregar Producto</string>
     <string name="product_code_prefix">Cód: %1$s</string>
     <string name="product_qty_short">x%1$d</string>
@@ -134,11 +127,9 @@
 
     <!-- Estadísticas -->
     <string name="stats_title">Estadísticas</string>
-    <string name="stats_total_spent">Gasto total</string>
     <string name="stats_total_purchases">Compras</string>
     <string name="stats_avg_per_purchase">Promedio</string>
     <string name="stats_favorite_market">Favorito</string>
-    <string name="stats_monthly_chart">Gasto mensual</string>
     <string name="stats_daily_chart">Gasto por día</string>
     <string name="stats_by_supermarket">Por supermercado</string>
     <string name="stats_no_data">Sin datos</string>
@@ -150,8 +141,6 @@
     <string name="profile_my_data">Mis datos</string>
     <string name="profile_save">Guardar cambios</string>
     <string name="profile_account">Cuenta</string>
-    <string name="profile_change_password">Cambiar contraseña</string>
-    <string name="profile_notifications">Notificaciones</string>
     <string name="profile_about">Sobre la app</string>
     <string name="profile_logout">Cerrar sesión</string>
     <string name="profile_logout_confirm">¿Estás seguro que querés cerrar sesión?</string>
@@ -163,30 +152,24 @@
     <string name="settings_title">Configuración</string>
     <string name="settings_appearance">Apariencia</string>
     <string name="settings_dark_mode">Modo oscuro</string>
-    <string name="settings_preferences">Preferencias</string>
     <string name="settings_currency">Moneda</string>
     <string name="settings_currency_display">Moneda de visualización</string>
     <string name="settings_exchange_rate">1 USD = $ %1$s ARS</string>
     <string name="settings_loading_rate">Obteniendo cotización…</string>
     <string name="settings_refresh_rate">Actualizar cotización</string>
     <string name="settings_about">Acerca de</string>
-    <string name="settings_version">Versión 1.0.0</string>
     <string name="settings_version_authors">Versión 2.0 · Valentina Beas &amp; Mirko Bubica Hundt</string>
-    <string name="settings_authors">Valentina Beas &amp; Mirko Bubica Hundt</string>
 
     <!-- Home -->
-    <string name="home_greeting">¡Hola, %1$s! 👋</string>
     <string name="home_greeting_simple">¡Hola! 👋</string>
     <string name="home_month_expenses">Tus gastos de este mes</string>
     <string name="home_total_spent">Total gastado</string>
-    <string name="home_monthly_spent">Gasto del mes</string>
     <string name="home_quick_access">Accesos rápidos</string>
     <string name="home_latest_purchases">Últimas compras</string>
     <string name="home_new_purchase">Nueva compra</string>
     <string name="home_products_count">%1$d productos</string>
 
     <!-- Ticket -->
-    <string name="ticket_add_photo">Agregar foto del ticket</string>
     <string name="ticket_camera">Cámara</string>
     <string name="ticket_gallery">Galería</string>
     <string name="ticket_change_photo">Cambiar foto</string>
@@ -211,7 +194,6 @@
 
     <!-- Errores -->
     <string name="error_empty_fields">Completá todos los campos</string>
-    <string name="error_generic">Ocurrió un error inesperado</string>
     <string name="error_loading">Error al cargar los datos</string>
     <string name="error_network">Sin conexión a internet</string>
     <string name="error_unknown">Error desconocido</string>

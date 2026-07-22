@@ -88,7 +88,6 @@ dependencies {
     implementation(libs.supabase.postgrest)
     implementation(libs.supabase.auth)
     implementation(libs.supabase.storage)
-    implementation(libs.supabase.realtime)
 
     // Ktor (requerido por Supabase)
     implementation(libs.ktor.client.android)
@@ -96,9 +95,6 @@ dependencies {
 
     // Coil (imágenes)
     implementation(libs.coil.compose)
-
-    // Splash Screen
-    implementation(libs.androidx.splashscreen)
 
     // Testing
     testImplementation(libs.junit)

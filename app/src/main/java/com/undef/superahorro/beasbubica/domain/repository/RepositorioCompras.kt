@@ -11,11 +11,6 @@ import kotlinx.coroutines.flow.Flow
 interface RepositorioCompras {
     fun obtenerCompras(): Flow<List<Compra>>
     suspend fun obtenerCompraPorId(id: String): Compra?
-    suspend fun insertarCompra(compra: Compra): Long
-    suspend fun actualizarCompra(compra: Compra)
     suspend fun eliminarCompra(compra: Compra)
     fun obtenerProductosPorCompra(compraId: String): Flow<List<Producto>>
-    suspend fun insertarProducto(producto: Producto)
-    suspend fun actualizarProducto(producto: Producto)
-    suspend fun eliminarProducto(producto: Producto)
 }

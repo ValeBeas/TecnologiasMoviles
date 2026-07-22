@@ -38,14 +38,3 @@ data class EntidadProducto(
         precio = precio
     )
 }
-
-fun Producto.aEntidad() = EntidadProducto(
-    id = id,
-    compraId = compraId,
-    idSupabase = idSupabase,
-    idCompraSupabase = idCompraSupabase,
-    codigo = codigo,
-    nombre = nombre,
-    cantidad = cantidad,
-    precio = precio
-)

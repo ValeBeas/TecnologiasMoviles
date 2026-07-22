@@ -13,7 +13,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.platform.LocalContext
 import com.undef.superahorro.R
 import com.undef.superahorro.domain.model.Compra
@@ -21,8 +20,6 @@ import com.undef.superahorro.ui.components.*
 import com.undef.superahorro.ui.theme.SuperAhorroTheme
 import com.undef.superahorro.viewmodel.ViewModelMoneda
 import com.undef.superahorro.viewmodel.ViewModelCompras
-import java.text.NumberFormat
-import java.util.Locale
 
 @Composable
 /**
@@ -39,7 +36,6 @@ fun PantallaHistorial(
     val viewModel = remember { ViewModelCompras(contexto) }
     val estado    by viewModel.estadoCompras.collectAsState()
     val compras   = estado.datos ?: emptyList()
-    val formateador = NumberFormat.getNumberInstance(Locale("es", "AR"))
 
     // Recursos leídos en contexto @Composable (no se pueden llamar dentro de los lambdas de abajo)
     val nombresMeses = stringArrayResource(R.array.month_names)

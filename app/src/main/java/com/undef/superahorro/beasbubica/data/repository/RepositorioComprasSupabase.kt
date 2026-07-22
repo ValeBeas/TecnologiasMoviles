@@ -1,7 +1,6 @@
 package com.undef.superahorro.data.repository
 
 import android.content.Context
-import android.net.Uri
 import com.undef.superahorro.data.local.db.BaseDeDatos
 import com.undef.superahorro.data.local.db.entity.EntidadProducto
 import com.undef.superahorro.data.local.db.entity.aEntidad
@@ -204,42 +203,15 @@ class RepositorioComprasSupabase(private val contexto: Context) : RepositorioCom
     }
 
     /**
-     * Sube la foto del ticket a Supabase Storage.
-     * Actualiza la URL en Supabase y en Room.
+     * Sube la foto del ticket (en bytes) a Supabase Storage y devuelve su URL pública.
+     * Si falla (sin red, bucket inexistente), devuelve null y la compra queda sin foto.
      */
-    suspend fun subirFotoTicket(uri: Uri, compraId: String): String? {
-        return runCatching {
-            // Leer los bytes de la imagen
-            val inputStream = contexto.contentResolver.openInputStream(uri)
-                ?: throw Exception("No se pudo abrir la imagen")
-            val bytes = inputStream.readBytes()
-            inputStream.close()
-
-            if (bytes.isEmpty()) throw Exception("La imagen está vacía")
-
-            val nombreArchivo = "tickets/$usuarioId/$compraId.jpg"
-
-
-            supabase.storage
-                .from("tickets")
-                .upload(nombreArchivo, bytes) { upsert = true }
-
-            val url = supabase.storage.from("tickets").publicUrl(nombreArchivo)
-            url
-        }.onFailure { e ->
-        }.getOrNull()
-    }
-
-
-    // Versión que recibe bytes directamente (evita problemas de URI expirado)
     suspend fun subirFotoTicketBytes(bytes: ByteArray, compraId: String): String? {
         return runCatching {
             if (bytes.isEmpty()) throw Exception("Imagen vacía")
             val nombreArchivo = "tickets/$usuarioId/$compraId.jpg"
             supabase.storage.from("tickets").upload(nombreArchivo, bytes) { upsert = true }
-            val url = supabase.storage.from("tickets").publicUrl(nombreArchivo)
-            url
-        }.onFailure { e ->
+            supabase.storage.from("tickets").publicUrl(nombreArchivo)
         }.getOrNull()
     }
 
@@ -310,21 +282,4 @@ class RepositorioComprasSupabase(private val contexto: Context) : RepositorioCom
             }
         }
     }
-
-    // LEGACY / INTERFACE
-
-    override suspend fun insertarCompra(compra: Compra): Long =
-        daoCompra.insertar(compra.aEntidad())
-
-    override suspend fun actualizarCompra(compra: Compra) =
-        daoCompra.actualizar(compra.aEntidad())
-
-    override suspend fun insertarProducto(producto: Producto) =
-        daoProducto.insertar(producto.aEntidad()).let { }
-
-    override suspend fun actualizarProducto(producto: Producto) =
-        daoProducto.actualizar(producto.aEntidad())
-
-    override suspend fun eliminarProducto(producto: Producto) =
-        daoProducto.eliminar(producto.aEntidad())
 }

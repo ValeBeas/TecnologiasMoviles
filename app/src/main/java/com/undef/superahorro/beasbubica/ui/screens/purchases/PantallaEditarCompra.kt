@@ -60,7 +60,6 @@ fun PantallaEditarCompra(
     var otroMercado   by remember { mutableStateOf("") }
     var fecha         by remember { mutableStateOf("") }
     var hora          by remember { mutableStateOf("") }
-    var expandido     by remember { mutableStateOf(false) }
     var guardando     by remember { mutableStateOf(false) }
     var mensajeError  by remember { mutableStateOf("") }
     var productosInicializados by remember { mutableStateOf(false) }
@@ -149,40 +148,13 @@ fun PantallaEditarCompra(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary)
 
-            // Dropdown supermercado
-            ExposedDropdownMenuBox(expanded = expandido, onExpandedChange = { expandido = !expandido }) {
-                OutlinedTextField(
-                    value = supermercado, onValueChange = {},
-                    readOnly = true,
-                    label = { Text(stringResource(R.string.purchase_supermarket)) },
-                    leadingIcon = { Icon(Icons.Outlined.Store, null) },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expandido) },
-                    modifier = Modifier.fillMaxWidth().menuAnchor(),
-                    shape = MaterialTheme.shapes.medium
-                )
-                ExposedDropdownMenu(expanded = expandido, onDismissRequest = { expandido = false }) {
-                    supermercados.forEach { s ->
-                        DropdownMenuItem(
-                            text = { Text(s) },
-                            onClick = {
-                                supermercado = s; expandido = false
-                                if (s != "Otro") otroMercado = ""
-                            }
-                        )
-                    }
-                }
-            }
-
-            if (eligioOtro) {
-                OutlinedTextField(
-                    value = otroMercado, onValueChange = { otroMercado = it },
-                    label = { Text(stringResource(R.string.purchase_other_market)) },
-                    leadingIcon = { Icon(Icons.Outlined.Edit, null) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.medium
-                )
-            }
+            // Dropdown de supermercado + campo libre (componente compartido)
+            SelectorSupermercado(
+                seleccionado  = supermercado,
+                otroMercado   = otroMercado,
+                alSeleccionar = { supermercado = it },
+                alCambiarOtro = { otroMercado = it }
+            )
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 CampoFecha(
@@ -199,81 +171,29 @@ fun PantallaEditarCompra(
 
             HorizontalDivider()
 
-            // Sección de productos editables
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(stringResource(R.string.purchase_products_count, productosVM.size),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary)
-                FilledTonalButton(onClick = { mostrarDialogoProducto = true }) {
-                    Icon(Icons.Outlined.Add, null, modifier = Modifier.size(18.dp))
-                    Spacer(Modifier.width(6.dp))
-                    Text(stringResource(R.string.action_add))
-                }
-            }
+            // Sección de productos (componente compartido con el alta)
+            SeccionProductos(
+                productos       = productosVM,
+                formateador     = formateador,
+                etiquetaAgregar = stringResource(R.string.action_add),
+                textoVacio      = stringResource(R.string.purchase_no_products),
+                alAgregar       = { mostrarDialogoProducto = true },
+                alAumentar      = { vmProductos.aumentarCantidad(it) },
+                alDisminuir     = { vmProductos.disminuirCantidad(it) },
+                alEliminar      = { vmProductos.eliminarProducto(it) }
+            )
 
-            if (productosVM.isEmpty()) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-                ) {
-                    Box(modifier = Modifier.fillMaxWidth().padding(20.dp),
-                        contentAlignment = Alignment.Center) {
-                        Text(stringResource(R.string.purchase_no_products), style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                }
-            } else {
-                Card(modifier = Modifier.fillMaxWidth()) {
-                    productosVM.forEachIndexed { indice, prod ->
-                        FilaProductoEdicion(
-                            producto    = prod,
-                            formateador = formateador,
-                            alAumentar  = { vmProductos.aumentarCantidad(indice) },
-                            alDisminuir = { vmProductos.disminuirCantidad(indice) },
-                            alEliminar  = { vmProductos.eliminarProducto(indice) }
-                        )
-                        if (indice < productosVM.lastIndex) HorizontalDivider()
-                    }
-                }
-            }
-
-            // Descuento (opcional) editable
-            OutlinedTextField(
-                value = descuentoTexto,
-                onValueChange = {
+            // Descuento + subtotal + total (componente compartido)
+            SeccionTotales(
+                subtotal           = total,
+                descuento          = descuentoActual,
+                descuentoTexto     = descuentoTexto,
+                alCambiarDescuento = {
                     descuentoTexto = it
                     descuentoActual = it.toDoubleOrNull() ?: 0.0
                 },
-                label = { Text(stringResource(R.string.purchase_discount_optional)) },
-                leadingIcon = { Icon(Icons.Outlined.LocalOffer, null) },
-                prefix = { Text(stringResource(R.string.currency_prefix)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium
-            )
-
-            // Subtotal (se muestra si hay descuento, para ver la diferencia)
-            if (descuentoActual > 0) {
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(stringResource(R.string.purchase_subtotal), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(stringResource(R.string.amount_format, formateador.format(total)))
-                }
-            }
-
-            // Total calculado (ya con el descuento restado)
-            OutlinedTextField(
-                value = if (totalConDescuento > 0) stringResource(R.string.amount_format, formateador.format(totalConDescuento)) else "",
-                onValueChange = {}, readOnly = true,
-                label = { Text(stringResource(R.string.purchase_total)) },
-                leadingIcon = { Icon(Icons.Outlined.AttachMoney, null) },
-                placeholder = { Text(stringResource(R.string.purchase_total_auto)) },
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.medium
+                totalFinal  = totalConDescuento,
+                formateador = formateador
             )
 
             if (mensajeError.isNotBlank()) {
@@ -285,10 +205,12 @@ fun PantallaEditarCompra(
             Button(
                 onClick = {
                     scope.launch {
+                        // Guardia: si la compra todavía no cargó, no hay nada que guardar
+                        val compraCargada = compra ?: return@launch
                         guardando = true; mensajeError = ""
                         runCatching {
                             val repo = RepositorioComprasSupabase(contexto)
-                            val compraActualizada = compra!!.copy(
+                            val compraActualizada = compraCargada.copy(
                                 fecha        = fecha,
                                 hora         = hora,
                                 supermercado = nombreSuper,
@@ -319,62 +241,6 @@ fun PantallaEditarCompra(
                 Icon(Icons.Outlined.Save, null)
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.profile_save))
-            }
-        }
-    }
-}
-
-@Composable
-private fun FilaProductoEdicion(
-    producto: ProductoEnCompra,
-    formateador: NumberFormat,
-    alAumentar: () -> Unit,
-    alDisminuir: () -> Unit,
-    alEliminar: () -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(producto.nombre, style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold)
-            Text(stringResource(R.string.product_price_each, formateador.format(producto.costo)),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-        Row(verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            FilledIconButton(
-                onClick = alDisminuir, enabled = producto.cantidad > 1,
-                modifier = Modifier.size(32.dp),
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant)
-            ) {
-                Icon(Icons.Outlined.Remove, null, modifier = Modifier.size(16.dp),
-                    tint = if (producto.cantidad > 1) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            Text("${producto.cantidad}", style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.widthIn(min = 24.dp),
-                textAlign = TextAlign.Center)
-            FilledIconButton(
-                onClick = alAumentar, modifier = Modifier.size(32.dp),
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primary)
-            ) {
-                Icon(Icons.Outlined.Add, null, modifier = Modifier.size(16.dp),
-                    tint = MaterialTheme.colorScheme.onPrimary)
-            }
-            Text(stringResource(R.string.amount_format, formateador.format(producto.subtotal)),
-                style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(start = 8.dp).widthIn(min = 72.dp))
-            IconButton(onClick = alEliminar, modifier = Modifier.size(32.dp)) {
-                Icon(Icons.Outlined.DeleteOutline, null, modifier = Modifier.size(18.dp),
-                    tint = MaterialTheme.colorScheme.error)
             }
         }
     }
