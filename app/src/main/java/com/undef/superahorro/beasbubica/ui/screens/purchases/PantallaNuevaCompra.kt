@@ -10,6 +10,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -76,10 +78,11 @@ fun PantallaNuevaCompra(
     var guardando    by remember { mutableStateOf(false) }
     var analizando   by remember { mutableStateOf(false) }
     var mensajeError by remember { mutableStateOf("") }
+    var descuentoTexto by remember { mutableStateOf("") }  // texto editable del descuento
 
     val totalCalculado   = productos.calcularTotal()
     val totalConDescuento = (totalCalculado - descuento).coerceAtLeast(0.0)
-    val supermercados  = listOf("Coto", "Carrefour", "Día", "Jumbo", "Walmart", "La Anónima", "Vea", "Otro")
+    val supermercados  = SUPERMERCADOS
     val eligioOtro     = supermercado == "Otro"
     val nombreSuper    = if (eligioOtro) otroMercado else supermercado
     val anioActual = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
@@ -253,15 +256,27 @@ fun PantallaNuevaCompra(
                 }
             }
 
-            // Subtotal + descuento (solo se muestran si hay descuento detectado)
+            // Descuento (opcional): se puede cargar a mano o lo completa la IA
+            OutlinedTextField(
+                value = descuentoTexto,
+                onValueChange = {
+                    descuentoTexto = it
+                    viewModel.setDescuento(it.toDoubleOrNull() ?: 0.0)
+                },
+                label = { Text(stringResource(R.string.purchase_discount_optional)) },
+                leadingIcon = { Icon(Icons.Outlined.LocalOffer, null) },
+                prefix = { Text(stringResource(R.string.currency_prefix)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.medium
+            )
+
+            // Subtotal (se muestra si hay descuento, para ver la diferencia)
             if (descuento > 0) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(stringResource(R.string.purchase_subtotal), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text(stringResource(R.string.amount_format, formateador.format(totalCalculado)))
-                }
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(stringResource(R.string.purchase_discount), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(stringResource(R.string.discount_amount_format, formateador.format(descuento)), color = MaterialTheme.colorScheme.error)
                 }
             }
 
@@ -322,9 +337,13 @@ fun PantallaNuevaCompra(
                                             // Mejora 1: solo se aplican fecha/hora si tienen el formato válido
                                             ticket.fecha?.takeIf { it.isNotBlank() && fechaValida(it, anioActual) }?.let { viewModel.setFecha(it) }
                                             ticket.hora?.takeIf { it.isNotBlank() && horaValida(it) }?.let { viewModel.setHora(it) }
-                                            // Descuento detectado (0 si no hubo)
+                                            // Descuento detectado (0 si no hubo) — se refleja en el campo editable
                                             val descuentoLeido = ticket.descuento ?: 0.0
                                             viewModel.setDescuento(descuentoLeido)
+                                            descuentoTexto = if (descuentoLeido > 0) {
+                                                if (descuentoLeido % 1.0 == 0.0) descuentoLeido.toInt().toString()
+                                                else descuentoLeido.toString()
+                                            } else ""
                                             // Reemplaza la lista: limpia lo anterior antes de cargar el nuevo ticket
                                             viewModel.limpiarProductos()
                                             // Agrega los productos leídos (ignora los que no tienen nombre) y suma lo leído

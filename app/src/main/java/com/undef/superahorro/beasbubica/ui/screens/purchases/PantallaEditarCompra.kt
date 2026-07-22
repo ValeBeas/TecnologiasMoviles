@@ -66,8 +66,9 @@ fun PantallaEditarCompra(
     var productosInicializados by remember { mutableStateOf(false) }
     var mostrarDialogoProducto by remember { mutableStateOf(false) }
     var descuentoActual by remember { mutableStateOf(0.0) }
+    var descuentoTexto by remember { mutableStateOf("") }
 
-    val supermercados = listOf("Coto", "Carrefour", "Día", "Jumbo", "Walmart", "La Anónima", "Vea", "Otro")
+    val supermercados = SUPERMERCADOS
     val eligioOtro    = supermercado == "Otro"
     val nombreSuper   = if (eligioOtro) otroMercado else supermercado
     val total         = productosVM.calcularTotal()
@@ -85,6 +86,9 @@ fun PantallaEditarCompra(
             fecha = it.fecha
             hora  = it.hora
             descuentoActual = it.descuento
+            descuentoTexto = if (it.descuento > 0) {
+                if (it.descuento % 1.0 == 0.0) it.descuento.toInt().toString() else it.descuento.toString()
+            } else ""
             val estaEnLista = supermercados.contains(it.supermercado)
             supermercado = if (estaEnLista) it.supermercado else "Otro"
             otroMercado  = if (!estaEnLista) it.supermercado else ""
@@ -237,15 +241,27 @@ fun PantallaEditarCompra(
                 }
             }
 
-            // Subtotal + descuento (si la compra tenía descuento)
+            // Descuento (opcional) editable
+            OutlinedTextField(
+                value = descuentoTexto,
+                onValueChange = {
+                    descuentoTexto = it
+                    descuentoActual = it.toDoubleOrNull() ?: 0.0
+                },
+                label = { Text(stringResource(R.string.purchase_discount_optional)) },
+                leadingIcon = { Icon(Icons.Outlined.LocalOffer, null) },
+                prefix = { Text(stringResource(R.string.currency_prefix)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.medium
+            )
+
+            // Subtotal (se muestra si hay descuento, para ver la diferencia)
             if (descuentoActual > 0) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(stringResource(R.string.purchase_subtotal), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Text(stringResource(R.string.amount_format, formateador.format(total)))
-                }
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(stringResource(R.string.purchase_discount), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text(stringResource(R.string.discount_amount_format, formateador.format(descuentoActual)), color = MaterialTheme.colorScheme.error)
                 }
             }
 

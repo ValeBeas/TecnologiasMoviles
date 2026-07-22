@@ -13,11 +13,13 @@ App Android para registrar y analizar gastos de supermercado.
 - Jetpack Compose
 - Navigation Compose
 - Material Design 3
-- Room — caché local de compras y productos
+- Room — caché local de compras y productos (con migraciones de esquema)
 - DataStore — sesión persistente, modo oscuro, moneda
-- Retrofit — API del dólar (bluelytics.com.ar)
+- Retrofit — API del dólar (bluelytics.com.ar) e IA de tickets (Groq)
 - Supabase — base de datos en la nube, autenticación y storage
+- Groq — IA de visión para leer el ticket y cargar la compra automáticamente
 - Corrutinas
+- Internacionalización (español / inglés) con `strings.xml`
 
 ---
 
@@ -59,6 +61,16 @@ las pantallas son Composables dentro de un NavHost.
 Login y registro contra Supabase Auth. La sesión persiste entre cierres
 de la app usando DataStore — el usuario no tiene que loguearse cada vez
 que abre la app. Al cerrar sesión se limpian los tokens y el caché local.
+Incluye recuperación de contraseña: desde el login se envía un email de
+reseteo con Supabase (`resetPasswordForEmail`).
+
+**Carga automática del ticket con IA (Groq)**
+Al adjuntar la foto del ticket, un botón "Cargar datos con IA" manda la
+imagen a un modelo de visión de Groq, que devuelve el supermercado, la
+fecha, la hora, el total, los descuentos y la lista de productos en JSON.
+Con eso se precarga el formulario de Nueva Compra para que el usuario
+revise y guarde. La imagen se reduce antes de enviarla (menos datos y
+para evitar el límite de la API).
 
 **Nueva Compra**
 El usuario elige el supermercado (con opción "Otro" para escribir uno libre),
@@ -87,8 +99,19 @@ productos con precios y el total calculado. Permite editar, borrar con
 confirmación y compartir la compra.
 
 **Editar Compra**
-Permite modificar el supermercado, fecha, hora y cantidades de productos
-de una compra existente. Los cambios se guardan en Supabase y Room.
+Permite modificar el supermercado, fecha, hora y los productos de una
+compra existente (agregar con un diálogo, cambiar cantidades o eliminar).
+Al guardar, la compra y sus productos se reemplazan en Supabase y Room.
+
+**Descuentos del ticket**
+Si el ticket tiene un descuento/promoción, la IA lo detecta y se guarda
+como un dato aparte. El total se calcula como subtotal menos descuento,
+y el desglose (Subtotal / Descuento / Total) se muestra al crear la
+compra y al re-verla en el detalle.
+
+**Búsqueda**
+En la lista de compras, la lupa muestra un campo que filtra en memoria
+por supermercado o fecha (sobre lo que ya emitió Room).
 
 **Historial**
 Muestra todas las compras agrupadas por mes y año, ordenadas de la más
@@ -120,10 +143,43 @@ Supabase y en DataStore.
 
 ## Sincronización de datos
 
-Room funciona como caché local de Supabase. Al abrir la app se sincroniza
-Room completo desde Supabase. Las pantallas leen siempre de Room para
-respuesta instantánea. Al hacer cambios se actualiza Supabase y Room
-simultáneamente. Al cerrar sesión Room se limpia.
+Room funciona como caché local de Supabase (única fuente de verdad de
+lectura). Al abrir la app se sincroniza Room completo desde Supabase. Las
+pantallas leen siempre de Room vía `Flow` para respuesta instantánea. Al
+hacer cambios se actualiza Supabase y Room. Al cerrar sesión Room se limpia.
+
+---
+
+## Networking (GET y POST)
+
+- **GET real:** cotización del dólar (`bluelytics.com.ar`) por Retrofit, y
+  lectura de compras/productos desde Supabase.
+- **POST real:** análisis del ticket con Groq (`POST /openai/v1/chat/completions`)
+  por Retrofit, y alta de compras/productos en Supabase.
+- Todas las operaciones de red corren en corrutinas (`viewModelScope` / `suspend`).
+
+---
+
+## Configuración (antes de compilar)
+
+Las claves no están en el repositorio. Crear/editar `local.properties` (que Git
+ignora) y agregar:
+
+```
+groq.api.key=TU_API_KEY_DE_GROQ
+```
+
+La API key de Groq (gratis) se obtiene en `console.groq.com`. Sin ella, la app
+compila y funciona, pero la carga automática del ticket con IA no.
+
+La base de datos en Supabase debe tener la columna de descuento en `compras`:
+
+```sql
+ALTER TABLE compras ADD COLUMN descuento numeric NOT NULL DEFAULT 0;
+```
+
+En el dispositivo, la base local Room migra sola de la versión 2 a la 3 sin
+perder datos (agrega la columna `descuento`).
 
 ---
 

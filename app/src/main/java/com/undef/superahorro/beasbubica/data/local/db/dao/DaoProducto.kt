@@ -16,14 +16,8 @@ interface DaoProducto {
     @Query("SELECT * FROM productos WHERE compraId = :compraId")
     suspend fun obtenerPorCompraSuspend(compraId: Int): List<EntidadProducto>
 
-    @Query("SELECT * FROM productos WHERE idSupabase = :idSupabase LIMIT 1")
-    suspend fun obtenerPorIdSupabase(idSupabase: String): EntidadProducto?
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertar(producto: EntidadProducto): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertarTodos(productos: List<EntidadProducto>)
 
     @Update
     suspend fun actualizar(producto: EntidadProducto)
@@ -33,7 +27,4 @@ interface DaoProducto {
 
     @Query("DELETE FROM productos WHERE compraId = :compraId")
     suspend fun eliminarPorCompra(compraId: Int)
-
-    @Query("UPDATE productos SET idSupabase = :idSupabase, idCompraSupabase = :idCompraSupabase WHERE id = :id")
-    suspend fun actualizarIdSupabase(id: Int, idSupabase: String, idCompraSupabase: String)
 }

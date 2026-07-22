@@ -20,9 +20,10 @@ data class DtoCompraSupabase(
     @SerialName("imagen_ticket") val imagenTicket: String? = null,
     @SerialName("created_at") val creadoEn: String? = null
 ) {
-    // Convierte el DTO al modelo de dominio
+    // Convierte el DTO al modelo de dominio.
+    // id = 0 para que Room lo autogenere en orden de inserción (así el orden por id refleja recencia).
     fun aDominio(cantidadProductos: Int = 0) = Compra(
-        id = id.hashCode(),
+        id = 0,
         idSupabase = id,
         fecha = fecha,
         hora = hora,

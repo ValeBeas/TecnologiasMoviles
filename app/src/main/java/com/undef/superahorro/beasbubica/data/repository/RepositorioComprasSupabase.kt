@@ -55,7 +55,9 @@ class RepositorioComprasSupabase(private val contexto: Context) : RepositorioCom
                 .select { filter { eq("usuario_id", usuarioId) } }
                 .decodeList<DtoCompraSupabase>()
 
-            comprasSupabase.forEach { dtoCompra ->
+            // Insertar en orden cronológico (created_at ISO ordena bien como texto) para que el
+            // id autogenerado de Room quede alineado con la fecha de guardado.
+            comprasSupabase.sortedBy { it.creadoEn ?: "" }.forEach { dtoCompra ->
                 // Traer los productos de cada compra
                 val productosSupabase = supabase.postgrest
                     .from("productos")
@@ -256,27 +258,8 @@ class RepositorioComprasSupabase(private val contexto: Context) : RepositorioCom
     }
 
     /**
-     * Edita una compra existente.
-     * Actualiza en Room y en Supabase.
-     */
-    suspend fun editarCompra(compra: Compra): Result<Unit> = runCatching {
-        // Room primero (UI se actualiza inmediatamente)
-        daoCompra.actualizar(compra.aEntidad())
-        // Supabase
-        if (compra.idSupabase.isNotBlank()) {
-            supabase.postgrest.from("compras")
-                .update(buildJsonObject {
-                    put("fecha",        compra.fecha)
-                    put("hora",         compra.hora)
-                    put("supermercado", compra.supermercado)
-                    put("total",        compra.total)
-                }) { filter { eq("id", compra.idSupabase) } }
-        }
-    }
-
-    /**
      * Edita una compra y REEMPLAZA sus productos.
-     * 1. Actualiza la cabecera en Room y Supabase (igual que editarCompra).
+     * 1. Actualiza la cabecera (fecha, hora, supermercado, total, descuento) en Room y Supabase.
      * 2. Borra los productos viejos (Supabase + Room) y re-inserta la lista actual.
      * De esta forma los cambios de productos (cantidad, alta y baja) quedan persistidos.
      */

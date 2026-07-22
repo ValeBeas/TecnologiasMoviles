@@ -77,6 +77,7 @@
     <string name="purchase_total_calculated">Total calculado</string>
     <string name="purchase_subtotal">Subtotal</string>
     <string name="purchase_discount">Descuento</string>
+    <string name="purchase_discount_optional">Descuento (opcional)</string>
     <string name="discount_amount_format">− $ %1$s</string>
     <string name="purchase_products_count">Productos (%1$d)</string>
 

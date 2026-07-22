@@ -13,9 +13,6 @@ interface DaoCompra {
     @Query("SELECT * FROM compras ORDER BY id DESC")
     fun obtenerTodas(): Flow<List<EntidadCompra>>
 
-    @Query("SELECT * FROM compras ORDER BY id DESC")
-    suspend fun obtenerTodasSuspend(): List<EntidadCompra>
-
     @Query("SELECT * FROM compras WHERE id = :id")
     suspend fun obtenerPorId(id: Int): EntidadCompra?
 
@@ -33,8 +30,4 @@ interface DaoCompra {
 
     @Query("DELETE FROM compras")
     suspend fun eliminarTodas()
-
-    // Actualiza el idSupabase después de sincronizar con la nube
-    @Query("UPDATE compras SET idSupabase = :idSupabase, sincronizado = 1 WHERE id = :id")
-    suspend fun actualizarIdSupabase(id: Int, idSupabase: String)
 }
