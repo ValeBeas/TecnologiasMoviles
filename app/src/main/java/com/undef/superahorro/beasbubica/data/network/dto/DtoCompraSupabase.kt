@@ -16,6 +16,7 @@ data class DtoCompraSupabase(
     val hora: String = "",
     val supermercado: String = "",
     val total: Double = 0.0,
+    val descuento: Double = 0.0,
     @SerialName("imagen_ticket") val imagenTicket: String? = null,
     @SerialName("created_at") val creadoEn: String? = null
 ) {
@@ -27,6 +28,7 @@ data class DtoCompraSupabase(
         hora = hora,
         supermercado = supermercado,
         total = total,
+        descuento = descuento,
         cantidadProductos = cantidadProductos,
         imagenTicket = imagenTicket
     )

@@ -1,8 +1,16 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
+}
+
+// Lee claves sensibles desde local.properties (que NO se sube a Git)
+val localProperties = Properties().apply {
+    val archivo = rootProject.file("local.properties")
+    if (archivo.exists()) archivo.inputStream().use { load(it) }
 }
 
 android {
@@ -20,6 +28,9 @@ android {
         // Supabase credentials — accesibles desde el código como BuildConfig.SUPABASE_URL
         buildConfigField("String", "SUPABASE_URL", "\"https://gnwuwkdnabarbvwxetqu.supabase.co\"")
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdud3V3a2RuYWJhcmJ2d3hldHF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMDcwMzQsImV4cCI6MjA5NjY4MzAzNH0.KaKDXw1zipRA6a_99IDKXIXVp1Wuw2I_0OAmV9yth1s\"")
+
+        // API key de Groq — se lee de local.properties (fuera de Git), NO se hardcodea acá
+        buildConfigField("String", "GROQ_API_KEY", "\"${localProperties.getProperty("groq.api.key", "")}\"")
     }
 
     buildTypes {

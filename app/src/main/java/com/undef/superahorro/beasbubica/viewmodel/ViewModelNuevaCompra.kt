@@ -36,15 +36,26 @@ class ViewModelNuevaCompra : ViewModel() {
     private val _productos = MutableStateFlow<List<ProductoEnCompra>>(emptyList())
     val productos: StateFlow<List<ProductoEnCompra>> = _productos.asStateFlow()
 
-    val total: Double get() = _productos.value.calcularTotal()
+    // Descuento detectado en el ticket (0 si no hubo)
+    private val _descuento = MutableStateFlow(0.0)
+    val descuento: StateFlow<Double> = _descuento.asStateFlow()
+
+    /** Total final = suma de productos menos el descuento (nunca negativo). */
+    val total: Double get() = (_productos.value.calcularTotal() - _descuento.value).coerceAtLeast(0.0)
 
     fun setSupermercado(valor: String) { _supermercado.value = valor }
     fun setOtroMercado(valor: String)  { _otroMercado.value = valor }
     fun setFecha(valor: String)        { _fecha.value = valor }
     fun setHora(valor: String)         { _hora.value = valor }
+    fun setDescuento(valor: Double)    { _descuento.value = valor.coerceAtLeast(0.0) }
 
     fun agregarProducto(producto: ProductoEnCompra) {
         _productos.value = _productos.value + producto
+    }
+
+    /** Vacía solo la lista de productos (se usa al re-escanear un ticket para no acumular). */
+    fun limpiarProductos() {
+        _productos.value = emptyList()
     }
 
     fun aumentarCantidad(indice: Int) {
@@ -70,5 +81,6 @@ class ViewModelNuevaCompra : ViewModel() {
         _fecha.value = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
         _hora.value  = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
         _productos.value = emptyList()
+        _descuento.value = 0.0
     }
 }

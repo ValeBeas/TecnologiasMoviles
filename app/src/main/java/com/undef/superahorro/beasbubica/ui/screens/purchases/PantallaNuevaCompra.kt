@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
@@ -26,8 +27,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.undef.superahorro.R
+import com.undef.superahorro.data.repository.ApiKeyFaltanteException
+import com.undef.superahorro.data.repository.ApiKeyInvalidaException
+import com.undef.superahorro.data.repository.RateLimitException
 import com.undef.superahorro.data.repository.RepositorioComprasSupabase
+import com.undef.superahorro.data.repository.RepositorioTicketGroq
 import com.undef.superahorro.domain.model.Compra
+import com.undef.superahorro.domain.model.ProductoEnCompra
 import com.undef.superahorro.domain.model.calcularTotal
 import com.undef.superahorro.ui.components.BarraSuperior
 import com.undef.superahorro.ui.components.CampoFecha
@@ -62,14 +68,17 @@ fun PantallaNuevaCompra(
     val fecha        by viewModel.fecha.collectAsState()
     val hora         by viewModel.hora.collectAsState()
     val productos    by viewModel.productos.collectAsState()
+    val descuento    by viewModel.descuento.collectAsState()
 
     var expandido    by remember { mutableStateOf(false) }
     var imagenUri    by remember { mutableStateOf<Uri?>(null) }
     var uriCamara    by remember { mutableStateOf<Uri?>(null) }
     var guardando    by remember { mutableStateOf(false) }
+    var analizando   by remember { mutableStateOf(false) }
     var mensajeError by remember { mutableStateOf("") }
 
-    val totalCalculado = productos.calcularTotal()
+    val totalCalculado   = productos.calcularTotal()
+    val totalConDescuento = (totalCalculado - descuento).coerceAtLeast(0.0)
     val supermercados  = listOf("Coto", "Carrefour", "Día", "Jumbo", "Walmart", "La Anónima", "Vea", "Otro")
     val eligioOtro     = supermercado == "Otro"
     val nombreSuper    = if (eligioOtro) otroMercado else supermercado
@@ -244,9 +253,21 @@ fun PantallaNuevaCompra(
                 }
             }
 
-            // Total solo lectura
+            // Subtotal + descuento (solo se muestran si hay descuento detectado)
+            if (descuento > 0) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(stringResource(R.string.purchase_subtotal), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.amount_format, formateador.format(totalCalculado)))
+                }
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(stringResource(R.string.purchase_discount), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.discount_amount_format, formateador.format(descuento)), color = MaterialTheme.colorScheme.error)
+                }
+            }
+
+            // Total solo lectura (ya con el descuento restado)
             OutlinedTextField(
-                value = if (totalCalculado > 0) stringResource(R.string.amount_format, formateador.format(totalCalculado)) else "",
+                value = if (totalConDescuento > 0) stringResource(R.string.amount_format, formateador.format(totalConDescuento)) else "",
                 onValueChange = {}, readOnly = true,
                 label = { Text(stringResource(R.string.purchase_total)) },
                 leadingIcon = { Icon(Icons.Outlined.AttachMoney, null) },
@@ -276,6 +297,83 @@ fun PantallaNuevaCompra(
                             modifier = Modifier.fillMaxWidth().height(200.dp)
                         )
                         Spacer(Modifier.height(12.dp))
+                        // Botón OCR/IA: manda la foto a Groq y precarga el formulario
+                        FilledTonalButton(
+                            onClick = {
+                                val uri = imagenUri ?: return@FilledTonalButton
+                                scope.launch {
+                                    analizando = true
+                                    val bytes = runCatching {
+                                        contexto.contentResolver.openInputStream(uri)?.readBytes()
+                                    }.getOrNull()
+                                    if (bytes == null || bytes.isEmpty()) {
+                                        analizando = false
+                                        Toast.makeText(contexto, contexto.getString(R.string.ticket_scan_read_error), Toast.LENGTH_LONG).show()
+                                        return@launch
+                                    }
+                                    RepositorioTicketGroq().analizarTicket(bytes)
+                                        .onSuccess { ticket ->
+                                            // Supermercado: si está en la lista lo selecciona; si no, "Otro"
+                                            ticket.supermercado?.takeIf { it.isNotBlank() }?.let { nombre ->
+                                                val match = supermercados.firstOrNull { it.equals(nombre, ignoreCase = true) && it != "Otro" }
+                                                if (match != null) viewModel.setSupermercado(match)
+                                                else { viewModel.setSupermercado("Otro"); viewModel.setOtroMercado(nombre) }
+                                            }
+                                            // Mejora 1: solo se aplican fecha/hora si tienen el formato válido
+                                            ticket.fecha?.takeIf { it.isNotBlank() && fechaValida(it, anioActual) }?.let { viewModel.setFecha(it) }
+                                            ticket.hora?.takeIf { it.isNotBlank() && horaValida(it) }?.let { viewModel.setHora(it) }
+                                            // Descuento detectado (0 si no hubo)
+                                            val descuentoLeido = ticket.descuento ?: 0.0
+                                            viewModel.setDescuento(descuentoLeido)
+                                            // Reemplaza la lista: limpia lo anterior antes de cargar el nuevo ticket
+                                            viewModel.limpiarProductos()
+                                            // Agrega los productos leídos (ignora los que no tienen nombre) y suma lo leído
+                                            var sumaLeida = 0.0
+                                            ticket.productos?.forEach { p ->
+                                                val nombreP = p.nombre?.trim().orEmpty()
+                                                if (nombreP.isNotBlank()) {
+                                                    val cant = p.cantidad ?: 1
+                                                    val precioUnit = p.precio ?: 0.0
+                                                    viewModel.agregarProducto(
+                                                        ProductoEnCompra(nombreP, cant, precioUnit, p.codigoBarras?.trim().orEmpty())
+                                                    )
+                                                    sumaLeida += cant * precioUnit
+                                                }
+                                            }
+                                            // Mejora 3: (suma de productos − descuento) debería coincidir con el total del ticket
+                                            val totalTicket = ticket.total ?: 0.0
+                                            val hayDesfasaje = totalTicket > 0 &&
+                                                kotlin.math.abs((sumaLeida - descuentoLeido) - totalTicket) > maxOf(totalTicket * 0.05, 1.0)
+                                            val idMensaje = if (hayDesfasaje) R.string.ticket_scan_total_mismatch
+                                                            else R.string.ticket_scan_success
+                                            Toast.makeText(contexto, contexto.getString(idMensaje), Toast.LENGTH_LONG).show()
+                                        }
+                                        .onFailure { e ->
+                                            // Mensaje según el tipo de error
+                                            val idError = when (e) {
+                                                is ApiKeyFaltanteException -> R.string.ticket_scan_no_key
+                                                is ApiKeyInvalidaException -> R.string.ticket_scan_invalid_key
+                                                is RateLimitException      -> R.string.ticket_scan_rate_limit
+                                                else -> R.string.ticket_scan_error
+                                            }
+                                            Toast.makeText(contexto, contexto.getString(idError), Toast.LENGTH_LONG).show()
+                                        }
+                                    analizando = false
+                                }
+                            },
+                            enabled = !analizando,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            if (analizando) {
+                                CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+                                Spacer(Modifier.width(8.dp))
+                                Text(stringResource(R.string.ticket_scanning))
+                            } else {
+                                Icon(Icons.Outlined.AutoAwesome, null, modifier = Modifier.size(18.dp))
+                                Spacer(Modifier.width(8.dp))
+                                Text(stringResource(R.string.ticket_scan_ai))
+                            }
+                        }
                         TextButton(onClick = { imagenUri = null }) {
                             Text(stringResource(R.string.ticket_change_photo), color = MaterialTheme.colorScheme.error)
                         }
@@ -324,13 +422,14 @@ fun PantallaNuevaCompra(
                                 }.getOrNull()
                             }
 
-                            // 1. Guardar compra en Supabase y Room
+                            // 1. Guardar compra en Supabase y Room (total ya con descuento restado)
                             val (idLocal, idSupabase) = repo.insertarCompraCompleta(
                                 fecha             = fecha,
                                 hora              = hora,
                                 supermercado      = nombreSuper,
-                                total             = totalCalculado,
-                                cantidadProductos = productos.size
+                                total             = totalConDescuento,
+                                cantidadProductos = productos.size,
+                                descuento         = descuento
                             )
 
                             // 2. Subir foto con los bytes ya leídos

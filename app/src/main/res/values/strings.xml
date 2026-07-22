@@ -75,6 +75,9 @@
     <string name="purchase_delete_confirm">¿Seguro que querés borrar la compra en %1$s del %2$s? No se puede deshacer.</string>
     <string name="purchase_total_paid">Total abonado</string>
     <string name="purchase_total_calculated">Total calculado</string>
+    <string name="purchase_subtotal">Subtotal</string>
+    <string name="purchase_discount">Descuento</string>
+    <string name="discount_amount_format">− $ %1$s</string>
     <string name="purchase_products_count">Productos (%1$d)</string>
 
     <!-- Productos -->
@@ -186,6 +189,15 @@
     <string name="ticket_camera">Cámara</string>
     <string name="ticket_gallery">Galería</string>
     <string name="ticket_change_photo">Cambiar foto</string>
+    <string name="ticket_scan_ai">Cargar datos con IA</string>
+    <string name="ticket_scanning">Analizando ticket…</string>
+    <string name="ticket_scan_success">Datos cargados del ticket ✨</string>
+    <string name="ticket_scan_total_mismatch">Datos cargados. Ojo: el total no coincide con el del ticket, revisá los productos.</string>
+    <string name="ticket_scan_error">No se pudieron leer los datos del ticket</string>
+    <string name="ticket_scan_read_error">No se pudo leer la imagen. Sacá la foto de nuevo.</string>
+    <string name="ticket_scan_rate_limit">Se alcanzó el límite de la API. Esperá unos segundos y reintentá.</string>
+    <string name="ticket_scan_no_key">Configurá tu API key de Groq en local.properties</string>
+    <string name="ticket_scan_invalid_key">La API key de Groq es inválida</string>
 
     <!-- Formato y comunes -->
     <string name="amount_format">$ %1$s</string>

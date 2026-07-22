@@ -220,21 +220,38 @@ fun PantallaDetalleCompra(
                 HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
             }
 
-            // Total calculado de los productos
+            // Total de los productos (con desglose de descuento si hubo)
             item {
+                val sumaProductos = productos.sumOf { it.precioTotal }
                 Card(modifier = Modifier.fillMaxWidth().padding(16.dp), shape = RoundedCornerShape(12.dp),
                      colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
-                    Row(
+                    Column(
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        Text(stringResource(R.string.purchase_total_calculated), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                        Text(
-                            viewModelMoneda.convertir(productos.sumOf { it.precioTotal }),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.ExtraBold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                        // Si la compra tuvo descuento, mostramos Subtotal y Descuento
+                        if (compra.descuento > 0) {
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                Text(stringResource(R.string.purchase_subtotal), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(viewModelMoneda.convertir(sumaProductos))
+                            }
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                                Text(stringResource(R.string.purchase_discount), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text("− " + viewModelMoneda.convertir(compra.descuento), color = MaterialTheme.colorScheme.error)
+                            }
+                        }
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                            Text(
+                                stringResource(if (compra.descuento > 0) R.string.purchase_total else R.string.purchase_total_calculated),
+                                style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                viewModelMoneda.convertir(if (compra.descuento > 0) compra.total else sumaProductos),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
             }

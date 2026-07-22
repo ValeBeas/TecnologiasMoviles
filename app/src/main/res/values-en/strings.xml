@@ -66,6 +66,9 @@
     <string name="purchase_delete_confirm">Delete the purchase at %1$s from %2$s? This can\'t be undone.</string>
     <string name="purchase_total_paid">Total paid</string>
     <string name="purchase_total_calculated">Calculated total</string>
+    <string name="purchase_subtotal">Subtotal</string>
+    <string name="purchase_discount">Discount</string>
+    <string name="discount_amount_format">− $ %1$s</string>
     <string name="purchase_products_count">Products (%1$d)</string>
     <string name="product_new">New Product</string>
     <string name="product_code">Barcode</string>
@@ -143,6 +146,15 @@
     <string name="ticket_camera">Camera</string>
     <string name="ticket_gallery">Gallery</string>
     <string name="ticket_change_photo">Change photo</string>
+    <string name="ticket_scan_ai">Load data with AI</string>
+    <string name="ticket_scanning">Analyzing ticket…</string>
+    <string name="ticket_scan_success">Ticket data loaded ✨</string>
+    <string name="ticket_scan_total_mismatch">Data loaded. Note: the total doesn\'t match the ticket, check the products.</string>
+    <string name="ticket_scan_error">Couldn\'t read the ticket data</string>
+    <string name="ticket_scan_read_error">Couldn\'t read the image. Take the photo again.</string>
+    <string name="ticket_scan_rate_limit">API rate limit reached. Wait a few seconds and try again.</string>
+    <string name="ticket_scan_no_key">Set your Groq API key in local.properties</string>
+    <string name="ticket_scan_invalid_key">The Groq API key is invalid</string>
     <string name="stats_total_spent">Total spent</string>
     <string name="stats_total_purchases">Purchases</string>
     <string name="stats_avg_per_purchase">Average</string>

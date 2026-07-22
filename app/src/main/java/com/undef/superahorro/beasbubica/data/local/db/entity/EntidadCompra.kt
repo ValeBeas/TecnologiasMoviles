@@ -16,6 +16,7 @@ data class EntidadCompra(
     val hora: String,
     val supermercado: String,
     val total: Double,
+    val descuento: Double = 0.0,
     val cantidadProductos: Int = 0,
     val imagenTicket: String? = null,
     val sincronizado: Boolean = false
@@ -27,6 +28,7 @@ data class EntidadCompra(
         hora = hora,
         supermercado = supermercado,
         total = total,
+        descuento = descuento,
         cantidadProductos = cantidadProductos,
         imagenTicket = imagenTicket
     )
@@ -39,6 +41,7 @@ fun Compra.aEntidad() = EntidadCompra(
     hora = hora,
     supermercado = supermercado,
     total = total,
+    descuento = descuento,
     cantidadProductos = cantidadProductos,
     imagenTicket = imagenTicket
 )

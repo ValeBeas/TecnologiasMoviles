@@ -16,7 +16,7 @@ import com.undef.superahorro.data.local.db.entity.EntidadProducto
  */
 @Database(
     entities = [EntidadCompra::class, EntidadProducto::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class BaseDeDatos : RoomDatabase() {
@@ -39,6 +39,13 @@ abstract class BaseDeDatos : RoomDatabase() {
             }
         }
 
+        // Migración de versión 2 a 3: columna de descuento en compras
+        val MIGRACION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE compras ADD COLUMN descuento REAL NOT NULL DEFAULT 0")
+            }
+        }
+
         fun obtenerInstancia(contexto: Context): BaseDeDatos {
             return INSTANCIA ?: synchronized(this) {
                 Room.databaseBuilder(
@@ -46,7 +53,7 @@ abstract class BaseDeDatos : RoomDatabase() {
                     BaseDeDatos::class.java,
                     NOMBRE_BD
                 )
-                    .addMigrations(MIGRACION_1_2)
+                    .addMigrations(MIGRACION_1_2, MIGRACION_2_3)
                     .build()
                     .also { INSTANCIA = it }
             }

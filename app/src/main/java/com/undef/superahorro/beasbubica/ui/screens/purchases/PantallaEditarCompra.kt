@@ -65,11 +65,13 @@ fun PantallaEditarCompra(
     var mensajeError  by remember { mutableStateOf("") }
     var productosInicializados by remember { mutableStateOf(false) }
     var mostrarDialogoProducto by remember { mutableStateOf(false) }
+    var descuentoActual by remember { mutableStateOf(0.0) }
 
     val supermercados = listOf("Coto", "Carrefour", "Día", "Jumbo", "Walmart", "La Anónima", "Vea", "Otro")
     val eligioOtro    = supermercado == "Otro"
     val nombreSuper   = if (eligioOtro) otroMercado else supermercado
     val total         = productosVM.calcularTotal()
+    val totalConDescuento = (total - descuentoActual).coerceAtLeast(0.0)
 
     // Cargar datos de la compra al entrar
     LaunchedEffect(compraId) {
@@ -82,6 +84,7 @@ fun PantallaEditarCompra(
         compra?.let {
             fecha = it.fecha
             hora  = it.hora
+            descuentoActual = it.descuento
             val estaEnLista = supermercados.contains(it.supermercado)
             supermercado = if (estaEnLista) it.supermercado else "Otro"
             otroMercado  = if (!estaEnLista) it.supermercado else ""
@@ -234,9 +237,21 @@ fun PantallaEditarCompra(
                 }
             }
 
-            // Total calculado
+            // Subtotal + descuento (si la compra tenía descuento)
+            if (descuentoActual > 0) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(stringResource(R.string.purchase_subtotal), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.amount_format, formateador.format(total)))
+                }
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(stringResource(R.string.purchase_discount), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(stringResource(R.string.discount_amount_format, formateador.format(descuentoActual)), color = MaterialTheme.colorScheme.error)
+                }
+            }
+
+            // Total calculado (ya con el descuento restado)
             OutlinedTextField(
-                value = if (total > 0) stringResource(R.string.amount_format, formateador.format(total)) else "",
+                value = if (totalConDescuento > 0) stringResource(R.string.amount_format, formateador.format(totalConDescuento)) else "",
                 onValueChange = {}, readOnly = true,
                 label = { Text(stringResource(R.string.purchase_total)) },
                 leadingIcon = { Icon(Icons.Outlined.AttachMoney, null) },
@@ -261,7 +276,8 @@ fun PantallaEditarCompra(
                                 fecha        = fecha,
                                 hora         = hora,
                                 supermercado = nombreSuper,
-                                total        = total,
+                                total        = totalConDescuento,
+                                descuento    = descuentoActual,
                                 cantidadProductos = productosVM.size
                             )
                             // Guarda la cabecera Y reemplaza los productos (persiste los cambios)

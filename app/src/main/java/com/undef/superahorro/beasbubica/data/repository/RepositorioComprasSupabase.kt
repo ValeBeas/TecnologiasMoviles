@@ -145,7 +145,8 @@ class RepositorioComprasSupabase(private val contexto: Context) : RepositorioCom
         hora: String,
         supermercado: String,
         total: Double,
-        cantidadProductos: Int
+        cantidadProductos: Int,
+        descuento: Double = 0.0
     ): Pair<Int, String> {
         val dto = supabase.postgrest
             .from("compras")
@@ -155,6 +156,7 @@ class RepositorioComprasSupabase(private val contexto: Context) : RepositorioCom
                 put("hora",        hora)
                 put("supermercado", supermercado)
                 put("total",       total)
+                put("descuento",   descuento)
             }) { select() }
             .decodeSingle<DtoCompraSupabase>()
 
@@ -291,6 +293,7 @@ class RepositorioComprasSupabase(private val contexto: Context) : RepositorioCom
                     put("hora",         compra.hora)
                     put("supermercado", compra.supermercado)
                     put("total",        compra.total)
+                    put("descuento",    compra.descuento)
                 }) { filter { eq("id", compra.idSupabase) } }
         }
 

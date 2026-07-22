@@ -10,7 +10,8 @@ data class Compra(
     val fecha: String = "",
     val hora: String = "",
     val supermercado: String = "",
-    val total: Double = 0.0,
+    val total: Double = 0.0,          // total final (ya con el descuento restado)
+    val descuento: Double = 0.0,      // monto de descuento aplicado (0 si no hubo)
     val cantidadProductos: Int = 0,
     val imagenTicket: String? = null
 )
