@@ -292,7 +292,9 @@ fun PantallaNuevaCompra(
                         guardando = false
                     }
                 },
-                modifier = Modifier.fillMaxWidth().height(52.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
                 shape = MaterialTheme.shapes.extraLarge,
                 enabled = formularioValido && !guardando
             ) {
@@ -327,14 +329,18 @@ private fun SeccionFotoTicket(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (imagenUri != null) {
                 AsyncImage(
                     model = imagenUri,
                     contentDescription = stringResource(R.string.purchase_ticket_photo),
-                    modifier = Modifier.fillMaxWidth().height(200.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
                 )
                 Spacer(Modifier.height(12.dp))
                 // Botón OCR/IA: manda la foto a Groq y precarga el formulario
